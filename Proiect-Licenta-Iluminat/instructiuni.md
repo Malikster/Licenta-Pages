@@ -1,3 +1,5 @@
+[Sistem automatizare instalatii electrice tip Smart-House folosind Arduino](../index.html)
+
 # Proiect Licenta - Instructiuni instalare si configurare
 
 Acest document descrie pasii pentru:

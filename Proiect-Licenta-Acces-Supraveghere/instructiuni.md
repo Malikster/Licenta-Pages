@@ -1,3 +1,5 @@
+[Sistem automatizare instalatii electrice tip Smart-House folosind Arduino](../index.html)
+
 # Instructiuni de instalare si configurare
 
 Acest ghid explica instalarea, configurarea si scrierea sketch-ului pentru proiectul `Proiect-Licenta-Acces-Supraveghere`.

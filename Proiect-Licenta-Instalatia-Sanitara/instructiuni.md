@@ -1,3 +1,5 @@
+[Sistem automatizare instalatii electrice tip Smart-House folosind Arduino](../index.html)
+
 # Instructiuni Firmware - Instalatia Sanitara
 
 Resurse asociate:

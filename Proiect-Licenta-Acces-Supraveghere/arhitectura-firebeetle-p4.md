@@ -1,3 +1,5 @@
+[Sistem automatizare instalatii electrice tip Smart-House folosind Arduino](../index.html)
+
 # Arhitectura FireBeetle 2 ESP32-P4
 
 Acest document descrie varianta recomandata pentru kitul:

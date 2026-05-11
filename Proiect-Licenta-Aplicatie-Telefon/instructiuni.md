@@ -1,3 +1,5 @@
+[Sistem automatizare instalatii electrice tip Smart-House folosind Arduino](../index.html)
+
 # Instructiuni de folosire - Aplicatia Android Control Casa
 
 ## Cuprins
@@ -251,4 +253,3 @@ Verifica:
 3. Daca Android avertizeaza ca reteaua nu are internet, alege sa ramai conectat.
 4. Dezactiveaza temporar datele mobile daca telefonul evita reteaua locala.
 5. Revino in aplicatie si apasa reconectare MQTT.
-
