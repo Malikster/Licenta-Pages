@@ -327,4 +327,87 @@ hr {
     overflow-x: auto;
     white-space: nowrap;
   }
+
+  .execution-list.panel {
+    overflow: visible !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+  }
+
+  .execution-list table,
+  .execution-list tbody,
+  .execution-list tr,
+  .execution-list td {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+    white-space: normal !important;
+  }
+
+  .execution-list table {
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .execution-list thead {
+    display: none;
+  }
+
+  .execution-list tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  .execution-list tr {
+    padding: 14px;
+    border: 1px solid var(--site-line);
+    border-radius: 8px;
+    background: var(--site-panel);
+  }
+
+  .execution-list td {
+    padding: 0;
+    border: 0;
+  }
+
+  .execution-list td:first-child {
+    margin-bottom: 12px;
+  }
+
+  .execution-list td:not(:first-child) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 46px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--site-line);
+    border-radius: 8px;
+    background: var(--site-soft);
+  }
+
+  .execution-list td:nth-child(2)::before {
+    content: "Cod finalizat";
+  }
+
+  .execution-list td:nth-child(3)::before {
+    content: "Hardware testat";
+  }
+
+  .execution-list td:nth-child(4)::before {
+    content: "Adaugare la macheta";
+  }
+
+  .execution-list td:not(:first-child)::before {
+    color: var(--site-text);
+    font-weight: 700;
+  }
+
+  .execution-list label.check {
+    min-height: 32px;
+    margin-left: auto;
+  }
 }

@@ -231,6 +231,10 @@
       td {
         padding: 12px;
       }
+
+      .top-actions > * {
+        flex: 1 1 100%;
+      }
     }
   </style>
   <link rel="stylesheet" href="assets/site.css">
@@ -259,7 +263,7 @@
       Se incarca lista comuna din site.
     </p>
 
-    <section class="panel" aria-label="Lista de executie pe proiecte">
+    <section class="panel execution-list" aria-label="Lista de executie pe proiecte">
       <table>
         <thead>
           <tr>
@@ -322,7 +326,7 @@
     <section class="progress-wrap" aria-label="Progres total">
       <div class="progress-line">
         <span>Progres total</span>
-        <span id="progress-text">0 / 15</span>
+        <span id="progress-text">0 / 15 (0%)</span>
       </div>
       <div class="bar"><span id="progress-bar"></span></div>
       <p class="note">
@@ -432,8 +436,9 @@
     function updateProgress() {
       const checked = boxes.filter((box) => box.checked).length;
       const total = boxes.length;
-      progressText.textContent = `${checked} / ${total}`;
-      progressBar.style.width = `${Math.round((checked / total) * 100)}%`;
+      const percent = Math.round((checked / total) * 100);
+      progressText.textContent = `${checked} / ${total} (${percent}%)`;
+      progressBar.style.width = `${percent}%`;
     }
 
     function updateButtons() {
