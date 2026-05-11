@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lista de executie - Licenta Pages</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5a6680;
+      --line: #dce2ee;
+      --accent: #1769aa;
+      --accent-dark: #0f4d7d;
+      --green: #1f7a55;
+      --soft: #e9f3fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    main,
+    .header-inner {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 30px 0 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    main {
+      padding: 28px 0 44px;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    a.button,
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    a.button:hover,
+    a.button:focus,
+    button:hover,
+    button:focus {
+      background: var(--accent-dark);
+    }
+
+    button.secondary {
+      background: #58657a;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f0f4f9;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .project {
+      font-weight: 700;
+    }
+
+    .desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 3px;
+    }
+
+    label.check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    .progress-wrap {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+    }
+
+    .progress-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #d5dfeb;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+      transition: width 160ms ease;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 760px) {
+      .panel {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 760px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Lista de executie</h1>
+      <p class="lead">
+        Urmarire rapida pentru stadiul fiecarui sub-proiect: cod finalizat, hardware testat si adaugare la macheta.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <div class="top-actions">
+      <a class="button" href="index.html">Inapoi la documentatie</a>
+      <button class="secondary" type="button" id="reset">Reseteaza bifele</button>
+    </div>
+
+    <section class="panel" aria-label="Lista de executie pe proiecte">
+      <table>
+        <thead>
+          <tr>
+            <th>Proiect</th>
+            <th>Cod finalizat</th>
+            <th>Hardware testat</th>
+            <th>Adaugare la macheta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="project">Proiect-Licenta-CPU-Principal</div>
+              <div class="desc">Raspberry Pi, AP, broker MQTT, servicii si ecran.</div>
+            </td>
+            <td><label class="check"><input type="checkbox" data-key="cpu-cod"> Cod</label></td>
+            <td><label class="check"><input type="checkbox" data-key="cpu-hardware"> Hardware</label></td>
+            <td><label class="check"><input type="checkbox" data-key="cpu-macheta"> Macheta</label></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="project">Proiect-Licenta-Aplicatie-Telefon</div>
+              <div class="desc">Aplicatia Android pentru control si monitorizare.</div>
+            </td>
+            <td><label class="check"><input type="checkbox" data-key="telefon-cod"> Cod</label></td>
+            <td><label class="check"><input type="checkbox" data-key="telefon-hardware"> Hardware</label></td>
+            <td><label class="check"><input type="checkbox" data-key="telefon-macheta"> Macheta</label></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="project">Proiect-Licenta-Iluminat</div>
+              <div class="desc">ESP12F cu 8 relee pentru circuitele de iluminat.</div>
+            </td>
+            <td><label class="check"><input type="checkbox" data-key="iluminat-cod"> Cod</label></td>
+            <td><label class="check"><input type="checkbox" data-key="iluminat-hardware"> Hardware</label></td>
+            <td><label class="check"><input type="checkbox" data-key="iluminat-macheta"> Macheta</label></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="project">Proiect-Licenta-Acces-Supraveghere</div>
+              <div class="desc">Camera, garaj, poarta si control acces.</div>
+            </td>
+            <td><label class="check"><input type="checkbox" data-key="acces-cod"> Cod</label></td>
+            <td><label class="check"><input type="checkbox" data-key="acces-hardware"> Hardware</label></td>
+            <td><label class="check"><input type="checkbox" data-key="acces-macheta"> Macheta</label></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="project">Proiect-Licenta-Instalatia-Sanitara</div>
+              <div class="desc">Rezervoare, senzori de nivel, debitmetru, valva si pompa.</div>
+            </td>
+            <td><label class="check"><input type="checkbox" data-key="sanitar-cod"> Cod</label></td>
+            <td><label class="check"><input type="checkbox" data-key="sanitar-hardware"> Hardware</label></td>
+            <td><label class="check"><input type="checkbox" data-key="sanitar-macheta"> Macheta</label></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="progress-wrap" aria-label="Progres total">
+      <div class="progress-line">
+        <span>Progres total</span>
+        <span id="progress-text">0 / 15</span>
+      </div>
+      <div class="bar"><span id="progress-bar"></span></div>
+      <p class="note">
+        Bifele se salveaza local in browserul curent. Daca deschizi pagina de pe alt dispozitiv, lista incepe necompletata.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const storagePrefix = "licenta-executie:";
+    const boxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-key]'));
+    const progressText = document.getElementById("progress-text");
+    const progressBar = document.getElementById("progress-bar");
+    const resetButton = document.getElementById("reset");
+
+    function updateProgress() {
+      const checked = boxes.filter((box) => box.checked).length;
+      const total = boxes.length;
+      progressText.textContent = `${checked} / ${total}`;
+      progressBar.style.width = `${Math.round((checked / total) * 100)}%`;
+    }
+
+    boxes.forEach((box) => {
+      box.checked = localStorage.getItem(storagePrefix + box.dataset.key) === "1";
+      box.addEventListener("change", () => {
+        localStorage.setItem(storagePrefix + box.dataset.key, box.checked ? "1" : "0");
+        updateProgress();
+      });
+    });
+
+    resetButton.addEventListener("click", () => {
+      boxes.forEach((box) => {
+        box.checked = false;
+        localStorage.removeItem(storagePrefix + box.dataset.key);
+      });
+      updateProgress();
+    });
+
+    updateProgress();
+  </script>
+</body>
+</html>
