@@ -70,6 +70,12 @@ main {
   padding: 28px 0 44px;
 }
 
+.shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 44px !important;
+}
+
 h1,
 h2,
 h3,
@@ -98,8 +104,16 @@ a:focus {
   color: var(--site-accent-dark);
 }
 
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 a.button,
 .button,
+.nav a,
+.button-link,
 button,
 input[type="button"],
 input[type="submit"] {
@@ -122,9 +136,19 @@ a.button:hover,
 a.button:focus,
 .button:hover,
 .button:focus,
+.nav a:hover,
+.nav a:focus,
+.button-link:hover,
+.button-link:focus,
 button:hover,
 button:focus {
   background: var(--site-accent-dark) !important;
+  color: #ffffff !important;
+}
+
+.nav a.primary,
+.button-link.primary {
+  background: var(--site-green) !important;
   color: #ffffff !important;
 }
 
@@ -134,7 +158,9 @@ section,
 article,
 .box,
 .step,
-.module {
+.module,
+.kpi,
+.step-list li {
   background: var(--site-panel) !important;
   color: var(--site-text) !important;
   border: 1px solid var(--site-line) !important;
@@ -149,6 +175,12 @@ article {
   padding: 18px;
 }
 
+.hero {
+  padding: 28px !important;
+  border: 1px solid var(--site-line) !important;
+  border-radius: 8px !important;
+}
+
 .grid,
 .cards,
 .modules {
@@ -160,17 +192,59 @@ article {
 .note,
 .muted,
 .lead,
+.lede,
 .desc,
+.footer,
 small {
   color: var(--site-muted) !important;
 }
 
 .note,
-blockquote {
+blockquote,
+.callout {
   background: var(--site-soft) !important;
   border: 1px solid var(--site-line) !important;
   border-radius: 8px !important;
   padding: 14px 16px;
+}
+
+.callout {
+  border-left: 4px solid var(--site-accent) !important;
+}
+
+.callout.warn {
+  border-left-color: var(--site-amber) !important;
+}
+
+.callout.danger {
+  border-left-color: var(--site-red) !important;
+}
+
+.eyebrow,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--site-line) !important;
+  border-radius: 999px !important;
+  background: var(--site-soft) !important;
+  color: var(--site-accent-dark) !important;
+  font-weight: 700;
+}
+
+.kpis,
+.pill-row {
+  gap: 12px;
+}
+
+.kpi strong {
+  color: var(--site-text) !important;
+}
+
+.step-index {
+  background: var(--site-accent) !important;
+  color: #ffffff !important;
 }
 
 table {
@@ -205,6 +279,10 @@ code {
   font-family: Consolas, "Liberation Mono", monospace;
 }
 
+code {
+  color: var(--site-accent-dark) !important;
+}
+
 pre {
   overflow-x: auto;
   padding: 14px 16px;
@@ -230,6 +308,7 @@ hr {
 @media (max-width: 760px) {
   main,
   .header-inner,
+  .shell,
   .container,
   .wrap,
   .content {

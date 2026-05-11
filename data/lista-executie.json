@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "updatedAt": null,
+  "items": {
+    "cpu-cod": false,
+    "cpu-hardware": false,
+    "cpu-macheta": false,
+    "telefon-cod": false,
+    "telefon-hardware": false,
+    "telefon-macheta": false,
+    "iluminat-cod": false,
+    "iluminat-hardware": false,
+    "iluminat-macheta": false,
+    "acces-cod": false,
+    "acces-hardware": false,
+    "acces-macheta": false,
+    "sanitar-cod": false,
+    "sanitar-hardware": false,
+    "sanitar-macheta": false
+  }
+}

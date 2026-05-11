@@ -97,6 +97,15 @@
       background: #58657a;
     }
 
+    button.danger {
+      background: #a53d3d;
+    }
+
+    button:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+    }
+
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -193,6 +202,22 @@
       font-size: 0.94rem;
     }
 
+    .sync-status {
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .sync-status.error {
+      background: #fff1f1;
+      border-color: #efb6b6;
+      color: #7a2525;
+    }
+
     @media (max-width: 760px) {
       .panel {
         overflow-x: auto;
@@ -224,8 +249,15 @@
   <main>
     <div class="top-actions">
       <a class="button" href="index.html">Inapoi la documentatie</a>
-      <button class="secondary" type="button" id="reset">Reseteaza bifele</button>
+      <button type="button" id="refresh-site">Actualizeaza din site</button>
+      <button type="button" id="save-site">Salveaza pe site</button>
+      <button class="secondary" type="button" id="token">Token GitHub</button>
+      <button class="danger" type="button" id="reset">Reseteaza bifele</button>
     </div>
+
+    <p class="sync-status" id="sync-status" role="status">
+      Se incarca lista comuna din site.
+    </p>
 
     <section class="panel" aria-label="Lista de executie pe proiecte">
       <table>
@@ -294,17 +326,108 @@
       </div>
       <div class="bar"><span id="progress-bar"></span></div>
       <p class="note">
-        Bifele se salveaza local in browserul curent. Daca deschizi pagina de pe alt dispozitiv, lista incepe necompletata.
+        Lista este comuna pentru toate dispozitivele dupa salvarea pe site.
       </p>
     </section>
   </main>
 
   <script>
+    const repoOwner = "Malikster";
+    const repoName = "Licenta-Pages";
+    const repoBranch = "main";
+    const statePath = "data/lista-executie.json";
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${statePath}`;
     const storagePrefix = "licenta-executie:";
+    const tokenStorageKey = `${storagePrefix}github-token`;
+    const draftStorageKey = `${storagePrefix}draft`;
     const boxes = Array.from(document.querySelectorAll('input[type="checkbox"][data-key]'));
     const progressText = document.getElementById("progress-text");
     const progressBar = document.getElementById("progress-bar");
     const resetButton = document.getElementById("reset");
+    const refreshButton = document.getElementById("refresh-site");
+    const saveButton = document.getElementById("save-site");
+    const tokenButton = document.getElementById("token");
+    const syncStatus = document.getElementById("sync-status");
+    let sharedSha = null;
+    let dirty = false;
+    let saving = false;
+    let saveTimer = null;
+
+    function encodeBase64(value) {
+      const bytes = new TextEncoder().encode(value);
+      let binary = "";
+      bytes.forEach((byte) => {
+        binary += String.fromCharCode(byte);
+      });
+      return btoa(binary);
+    }
+
+    function decodeBase64(value) {
+      const binary = atob(value.replace(/\s/g, ""));
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    function getToken() {
+      return localStorage.getItem(tokenStorageKey) || "";
+    }
+
+    function setStatus(message, isError = false) {
+      syncStatus.textContent = message;
+      syncStatus.classList.toggle("error", isError);
+    }
+
+    function formatDate(value) {
+      if (!value) {
+        return "nesalvata inca";
+      }
+      return new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(value));
+    }
+
+    function currentState() {
+      const items = {};
+      boxes.forEach((box) => {
+        items[box.dataset.key] = box.checked;
+      });
+      return {
+        version: 1,
+        updatedAt: new Date().toISOString(),
+        items,
+      };
+    }
+
+    function isEmptyState(state) {
+      return !state.updatedAt && Object.values(state.items || {}).every((value) => !value);
+    }
+
+    function readLegacyLocalState() {
+      const items = {};
+      let hasChecked = false;
+      boxes.forEach((box) => {
+        const checked = localStorage.getItem(storagePrefix + box.dataset.key) === "1";
+        items[box.dataset.key] = checked;
+        hasChecked = hasChecked || checked;
+      });
+      return hasChecked ? { version: 1, updatedAt: null, items } : null;
+    }
+
+    function clearLegacyLocalState() {
+      boxes.forEach((box) => {
+        localStorage.removeItem(storagePrefix + box.dataset.key);
+      });
+    }
+
+    function applyState(state) {
+      boxes.forEach((box) => {
+        box.checked = Boolean(state.items && state.items[box.dataset.key]);
+      });
+      dirty = false;
+      updateProgress();
+      updateButtons();
+    }
 
     function updateProgress() {
       const checked = boxes.filter((box) => box.checked).length;
@@ -313,23 +436,180 @@
       progressBar.style.width = `${Math.round((checked / total) * 100)}%`;
     }
 
-    boxes.forEach((box) => {
-      box.checked = localStorage.getItem(storagePrefix + box.dataset.key) === "1";
-      box.addEventListener("change", () => {
-        localStorage.setItem(storagePrefix + box.dataset.key, box.checked ? "1" : "0");
-        updateProgress();
+    function updateButtons() {
+      tokenButton.textContent = getToken() ? "Token GitHub activ" : "Token GitHub";
+      saveButton.disabled = saving || !dirty;
+      refreshButton.disabled = saving;
+      resetButton.disabled = saving;
+    }
+
+    async function fetchSharedFile() {
+      const response = await fetch(`${apiUrl}?ref=${repoBranch}&t=${Date.now()}`, {
+        headers: { Accept: "application/vnd.github+json" },
       });
+      if (!response.ok) {
+        throw new Error(`GitHub API ${response.status}`);
+      }
+      const file = await response.json();
+      return {
+        sha: file.sha,
+        state: JSON.parse(decodeBase64(file.content)),
+      };
+    }
+
+    async function loadSharedState() {
+      setStatus("Se incarca lista comuna din site.");
+      updateButtons();
+      try {
+        const remote = await fetchSharedFile();
+        sharedSha = remote.sha;
+        const legacyState = readLegacyLocalState();
+
+        if (legacyState && isEmptyState(remote.state)) {
+          applyState(legacyState);
+          dirty = true;
+          updateButtons();
+          setStatus("Am gasit bife locale vechi. Apasa Salveaza pe site pentru a le face vizibile pe toate dispozitivele.");
+          return;
+        }
+
+        applyState(remote.state);
+        clearLegacyLocalState();
+        localStorage.setItem(draftStorageKey, JSON.stringify(remote.state));
+        setStatus(`Lista comuna a fost incarcata. Ultima salvare: ${formatDate(remote.state.updatedAt)}.`);
+      } catch (error) {
+        const draft = localStorage.getItem(draftStorageKey);
+        if (draft) {
+          applyState(JSON.parse(draft));
+          dirty = true;
+          updateButtons();
+          setStatus(`Nu am putut incarca lista comuna; folosesc ultima copie din browser. ${error.message}`, true);
+          return;
+        }
+        setStatus(`Nu am putut incarca lista comuna. ${error.message}`, true);
+      }
+    }
+
+    function configureToken() {
+      const existingToken = getToken();
+      const token = window.prompt(
+        "Introdu un GitHub fine-grained token cu permisiune Contents: Read and write pentru repo-ul Malikster/Licenta-Pages. Tokenul ramane salvat doar in browserul curent.",
+        existingToken ? "********" : ""
+      );
+      if (token === null) {
+        return false;
+      }
+      if (!token.trim()) {
+        localStorage.removeItem(tokenStorageKey);
+        updateButtons();
+        setStatus("Tokenul GitHub a fost sters din browserul curent.");
+        return false;
+      }
+      if (token !== "********") {
+        localStorage.setItem(tokenStorageKey, token.trim());
+      }
+      updateButtons();
+      setStatus("Tokenul GitHub este configurat pentru acest browser.");
+      return true;
+    }
+
+    async function saveSharedState() {
+      let token = getToken();
+      if (!token) {
+        const configured = configureToken();
+        token = getToken();
+        if (!configured || !token) {
+          setStatus("Lista nu a fost salvata pe site: lipseste tokenul GitHub.", true);
+          return;
+        }
+      }
+
+      saving = true;
+      updateButtons();
+      setStatus("Se salveaza lista pe site.");
+
+      try {
+        const remote = await fetchSharedFile();
+        sharedSha = remote.sha;
+        const state = currentState();
+        const response = await fetch(apiUrl, {
+          method: "PUT",
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: "Actualizeaza lista de executie",
+            content: encodeBase64(`${JSON.stringify(state, null, 2)}\n`),
+            sha: sharedSha,
+            branch: repoBranch,
+          }),
+        });
+
+        if (!response.ok) {
+          const details = await response.json().catch(() => null);
+          throw new Error(details && details.message ? details.message : `GitHub API ${response.status}`);
+        }
+
+        const result = await response.json();
+        sharedSha = result.content.sha;
+        dirty = false;
+        clearLegacyLocalState();
+        localStorage.setItem(draftStorageKey, JSON.stringify(state));
+        setStatus(`Lista a fost salvata pe site. Ultima salvare: ${formatDate(state.updatedAt)}.`);
+      } catch (error) {
+        setStatus(`Lista nu a fost salvata pe site. ${error.message}`, true);
+      } finally {
+        saving = false;
+        updateButtons();
+      }
+    }
+
+    function markDirty() {
+      dirty = true;
+      updateProgress();
+      updateButtons();
+      localStorage.setItem(draftStorageKey, JSON.stringify(currentState()));
+
+      if (!getToken()) {
+        setStatus("Modificari nesalvate pe site. Configureaza tokenul GitHub si apasa Salveaza pe site.");
+        return;
+      }
+
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        saveSharedState();
+      }, 900);
+    }
+
+    boxes.forEach((box) => {
+      box.addEventListener("change", markDirty);
     });
 
     resetButton.addEventListener("click", () => {
       boxes.forEach((box) => {
         box.checked = false;
-        localStorage.removeItem(storagePrefix + box.dataset.key);
       });
-      updateProgress();
+      clearLegacyLocalState();
+      markDirty();
+    });
+
+    refreshButton.addEventListener("click", () => {
+      loadSharedState();
+    });
+
+    saveButton.addEventListener("click", () => {
+      saveSharedState();
+    });
+
+    tokenButton.addEventListener("click", () => {
+      configureToken();
     });
 
     updateProgress();
+    updateButtons();
+    loadSharedState();
   </script>
 </body>
 </html>
