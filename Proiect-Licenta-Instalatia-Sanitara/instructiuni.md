@@ -2,7 +2,7 @@
 
 Resurse asociate:
 
-- `../index.html` - prezentare generala a proiectului
+- `index.html` - prezentare generala a proiectului
 - `instructiuni.html` - versiune HTML a acestui ghid
 - `mqtt.html` - schema logica pentru MQTT si modurile AUTO/MANUAL
 - `hardware.html` - schema hardware, pini si alimentari

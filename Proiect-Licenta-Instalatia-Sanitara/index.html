@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proiect Licenta - Instalatia Sanitara</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #edf2f8;
+      --surface: #ffffff;
+      --text: #172033;
+      --muted: #5d677b;
+      --accent: #0f67d8;
+      --accent-strong: #0a4ea5;
+      --border: #d8e0eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f7faff 0%, #edf2f8 100%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+    }
+
+    header {
+      padding: 24px 0 12px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: 38px;
+      max-width: 780px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-top: 30px;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .lead {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 20px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      color: var(--accent-strong);
+      border-color: var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .stack {
+      margin-top: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    code {
+      background: #eef3fb;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Proiect Licenta - Instalatia Sanitara</h1>
+      <p class="lead">
+        Sistem experimental bazat pe ESP32 pentru monitorizarea si controlul a doua rezervoare,
+        cu senzori de nivel, debitmetru, valva, pompa bidirectionala, afisaj OLED si integrare MQTT.
+      </p>
+    </header>
+
+    <section class="hero">
+      <h2>Ce face proiectul</h2>
+      <p>
+        Firmware-ul citeste nivelul din doua rezervoare, masoara debitul de apa, controleaza valva si pompa,
+        afiseaza local starea pe OLED si comunica prin MQTT cu restul sistemului din licenta.
+      </p>
+      <p>
+        Proiectul poate rula in modul <code>AUTO</code>, in care actioneaza dupa pragurile configurate,
+        sau in modul <code>MANUAL</code>, unde actuatorii sunt controlati prin mesaje MQTT.
+      </p>
+      <div class="actions">
+        <a class="button" href="instructiuni.html">Deschide instructiunile HTML</a>
+        <a class="button secondary" href="instructiuni.md">Vezi instructiunile Markdown</a>
+        <a class="button secondary" href="mqtt.html">Vezi schema MQTT</a>
+        <a class="button secondary" href="hardware.html">Vezi schema hardware</a>
+        <a class="button secondary" href="schema-instalatie.html">Vezi schema vizuala</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Arhitectura pe scurt</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Rezervoare</h3>
+          <p>Doua recipiente, <code>R1</code> si <code>R2</code>, fiecare cu senzor ultrasonic si plutitor.</p>
+        </article>
+        <article class="card">
+          <h3>Linia 1</h3>
+          <p><code>R1 -&gt; debitmetru -&gt; valva -&gt; R2</code></p>
+        </article>
+        <article class="card">
+          <h3>Linia 2</h3>
+          <p><code>R1 &lt;-&gt; pompa &lt;-&gt; R2</code></p>
+        </article>
+        <article class="card">
+          <h3>Comunicatie</h3>
+          <p>Control si status prin MQTT pe topicurile dedicate proiectului.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div class="panel">
+        <h2>Componente principale</h2>
+        <ul>
+          <li>ESP32 Development Board cu OLED 0.96 inch</li>
+          <li>2 x JSN-SR04T pentru nivel</li>
+          <li>2 x plutitor</li>
+          <li>1 x debitmetru</li>
+          <li>1 x valva electromagnetica 12V NC</li>
+          <li>1 x pompa bidirectionala</li>
+          <li>driver pentru valva si driver pentru pompa</li>
+        </ul>
+        <p>
+          Schema de cablare si recomandarile pentru alimentare sunt disponibile in
+          <a href="hardware.html">hardware.html</a>.
+          Schema vizuala completa este disponibila in
+          <a href="schema-instalatie.html">schema-instalatie.html</a>.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>MQTT pe scurt</h2>
+        <p>Comenzi primite pe <code>LICENTA/SANITAR/COMANDA</code></p>
+        <p>Status publicat pe <code>LICENTA/SANITAR/STATUS</code></p>
+        <p>
+          Firmware-ul publica starea scurta <code>ABC</code>, nivelurile <code>NIVEL-1-XYZ</code>,
+          <code>NIVEL-2-XYZ</code> si debitul real <code>DEBIT-XYZ</code>.
+        </p>
+        <p>
+          Schema logica pentru topicuri, mesaje si tranzitiile dintre <code>AUTO</code> si <code>MANUAL</code>
+          este disponibila in <a href="mqtt.html">mqtt.html</a>.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>Configurare recomandata</h2>
+        <ul>
+          <li>WiFi SSID: <code>Licenta-RPi-AP</code></li>
+          <li>WiFi password: <code>licenta-rpi</code></li>
+          <li>MQTT host: <code>192.168.4.1</code></li>
+          <li>MQTT port: <code>1883</code></li>
+          <li>Client ID: <code>licenta-sanitar-esp32</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Pentru instalare, cablare, configurare, topicuri MQTT si troubleshooting, foloseste pagina completa de instructiuni.
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prezentare proiect - Aplicatia Android Control Casa</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --text: #20212a;
+      --muted: #5b5d6b;
+      --accent: #2563eb;
+      --accent-strong: #1d4ed8;
+      --accent-soft: #eaf1ff;
+      --success: #0f766e;
+      --success-soft: #e6f6f3;
+      --warn: #b45309;
+      --warn-soft: #fff4df;
+      --border: #dfe3ec;
+      --code: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 34px 20px 26px;
+    }
+
+    header .wrap,
+    main,
+    footer {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 2.1rem;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    nav {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a,
+    .button {
+      display: inline-block;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    nav a {
+      padding: 8px 12px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-size: 0.95rem;
+    }
+
+    main {
+      padding: 24px 20px 48px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .button {
+      padding: 10px 14px;
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .button.secondary {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .button:hover {
+      background: var(--accent-strong);
+    }
+
+    .button.secondary:hover {
+      color: var(--accent-strong);
+      background: #dbe8ff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fbfcff;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge.control {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .badge.status {
+      color: var(--success);
+      background: var(--success-soft);
+    }
+
+    .badge.setup {
+      color: var(--warn);
+      background: var(--warn-soft);
+    }
+
+    code,
+    pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    code {
+      background: #f0f1f7;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+
+    pre {
+      background: var(--code);
+      color: #f9fafb;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f1f7;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: #f6f9ff;
+      padding: 12px 14px;
+      border-radius: 6px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 0 20px 32px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Proiect Licenta - Aplicatie Android Control Casa</h1>
+      <p class="subtitle">Aplicatie mobila pentru controlul si monitorizarea subsistemelor Acces, Iluminat si Instalatie Sanitara din proiectul de licenta.</p>
+      <nav aria-label="Cuprins">
+        <a href="#prezentare">Prezentare</a>
+        <a href="#arhitectura">Arhitectura</a>
+        <a href="#functionalitati">Functionalitati</a>
+        <a href="#comunicatie">Comunicatie</a>
+        <a href="#configurare">Configurare</a>
+        <a href="#documentatie">Documentatie</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="prezentare">
+      <h2>Prezentare</h2>
+      <p>Aplicatia Android este interfata de comanda pentru casa inteligenta din proiectul de licenta. Ea trimite comenzi catre brokerul MQTT local, primeste statusurile publicate de subsisteme si afiseaza informatii utile pentru operator.</p>
+      <p>Aplicatia este construita in Kotlin cu Jetpack Compose si este gandita pentru rulare pe telefon Android conectat la reteaua locala a Raspberry Pi.</p>
+      <div class="hero-actions">
+        <a class="button" href="instructiuni.html">Deschide instructiunile de folosire</a>
+        <a class="button secondary" href="instructiuni.md">Vezi varianta Markdown</a>
+      </div>
+    </section>
+
+    <section id="arhitectura">
+      <h2>Arhitectura generala</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="badge control">Android</span>
+          <h3>Aplicatia mobila</h3>
+          <p>Afiseaza paginile de control, trimite comenzi MQTT si actualizeaza interfata pe baza statusurilor primite.</p>
+        </article>
+        <article class="card">
+          <span class="badge status">MQTT</span>
+          <h3>Broker local</h3>
+          <p>Brokerul ruleaza in reteaua Raspberry Pi si transporta comenzile si statusurile intre telefon si subsisteme.</p>
+        </article>
+        <article class="card">
+          <span class="badge setup">Subsisteme</span>
+          <h3>Acces, Iluminat, Sanitar</h3>
+          <p>CPU Principal si modulele conectate executa comenzile si publica starea reala a instalatiei.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="functionalitati">
+      <h2>Functionalitati</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Acces</h3>
+          <ul>
+            <li>Control garaj: inchide, stop, deschide.</li>
+            <li>Control poarta: blocheaza si deblocheaza.</li>
+            <li>Autentificare biometrica pentru comenzi, cu exceptie in modul Debug.</li>
+            <li>Afisare camera de supraveghere si status Acces prin MQTT.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Iluminat</h3>
+          <ul>
+            <li>Control pentru 8 circuite de iluminat.</li>
+            <li>Actualizare stare din statusul MQTT de 8 biti.</li>
+            <li>Comenzi rapide din interfata Android.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Instalatie Sanitara</h3>
+          <ul>
+            <li>Afisare niveluri pentru doua recipiente.</li>
+            <li>Status valva, pompa si debit.</li>
+            <li>Mod AUTO/MANUAL si comenzi pentru valva si pompa.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="comunicatie">
+      <h2>Comunicatie</h2>
+      <p>Comunicatia principala se face prin MQTT. Pentru camera si statusul de fallback al subsistemului Acces se foloseste HTTP.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Subsistem</th>
+            <th>Topicuri principale</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Acces</td>
+            <td><code>LICENTA/ACCES/GARAJ</code>, <code>LICENTA/ACCES/POARTA</code>, <code>LICENTA/ACCES/STATUS</code></td>
+            <td>Comenzi garaj/poarta si status JSON pentru pagina Acces.</td>
+          </tr>
+          <tr>
+            <td>Iluminat</td>
+            <td><code>LICENTA/ILUMINAT/COMANDA</code>, <code>LICENTA/ILUMINAT/STATUS</code></td>
+            <td>Comenzi circuite si status pe 8 biti.</td>
+          </tr>
+          <tr>
+            <td>Instalatie Sanitara</td>
+            <td><code>LICENTA/SANITAR/COMANDA</code>, <code>LICENTA/SANITAR/STATUS</code></td>
+            <td>Comenzi mod/valva/pompa si status pentru niveluri, valva, pompa si debit.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="configurare">
+      <h2>Configurare recomandata</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Setare</th>
+            <th>Valoare recomandata</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MQTT</td>
+            <td><code>tcp://192.168.4.1:1883</code></td>
+          </tr>
+          <tr>
+            <td>User/parola MQTT</td>
+            <td><code>licenta</code> / <code>licenta</code></td>
+          </tr>
+          <tr>
+            <td>URL Acces-Supraveghere</td>
+            <td><code>http://192.168.4.3</code></td>
+          </tr>
+          <tr>
+            <td>Retea telefon</td>
+            <td><code>Licenta-RPi-AP</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">Pentru pasii completi de build, instalare APK si troubleshooting, foloseste pagina de instructiuni.</p>
+    </section>
+
+    <section id="documentatie">
+      <h2>Documentatie</h2>
+      <p>Pagina completa de utilizare include cerinte, build debug, instalare APK, configurare initiala, topicuri MQTT, descrierea paginilor si troubleshooting.</p>
+      <div class="hero-actions">
+        <a class="button" href="instructiuni.html">Instructiuni de folosire</a>
+        <a class="button secondary" href="../README.md">README proiect</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Proiect-Licenta-Aplicatie-Telefon - documentatie statica pentru prezentarea aplicatiei Android.</p>
+  </footer>
+</body>
+</html>
