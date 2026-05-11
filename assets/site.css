@@ -31,14 +31,20 @@ body {
   letter-spacing: 0;
 }
 
-body::before {
-  content: "Licenta Pages";
+.site-home-link {
   display: block;
   padding: 10px 16px;
   background: var(--site-accent);
-  color: #ffffff;
+  color: #ffffff !important;
   font-weight: 700;
   letter-spacing: 0;
+  text-decoration: none;
+}
+
+.site-home-link:hover,
+.site-home-link:focus {
+  background: var(--site-accent-dark);
+  color: #ffffff !important;
 }
 
 header,
