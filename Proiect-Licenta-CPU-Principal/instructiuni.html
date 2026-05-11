@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPU Principal - Instructiuni de instalare</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <span class="eyebrow">Instalare</span>
+      <h1>Configurare completa pentru CPU Principal</h1>
+      <p class="lede">
+        Aceasta pagina aduna intr-un singur flux pasii de instalare pentru sistemul Linux de pe Raspberry Pi,
+        modul Access Point, brokerul MQTT, serviciul de orchestrare si aplicatia pentru ecranul tactil.
+      </p>
+      <nav class="nav" aria-label="Navigatie instructiuni">
+        <a href="index.html">Inapoi la prezentare</a>
+        <a href="#linux">Linux + ecran</a>
+        <a href="#ap">Mod AP</a>
+        <a href="#mqtt">Broker MQTT</a>
+        <a href="#servicii">Servicii</a>
+        <a href="#verificare">Verificare</a>
+      </nav>
+    </header>
+
+    <section class="section">
+      <div class="callout warn">
+        <strong>Presupuneri:</strong> Raspberry Pi 4, ecran rezistiv 3.5 inch K-0403/52Pi, Raspberry Pi OS 64-bit oficial,
+        retea locala gestionata de Pi si broker MQTT local.
+      </div>
+    </section>
+
+    <section class="section" id="linux">
+      <h2>1. Instalare Linux si suport pentru ecran</h2>
+      <ol class="step-list">
+        <li>
+          <span class="step-index">1</span>
+          <div>
+            <h3>Pregateste cardul microSD</h3>
+            <p>Foloseste <strong>Raspberry Pi OS (64-bit)</strong> din sursa oficiala Raspberry Pi.</p>
+            <pre><code>Choose Device -> Raspberry Pi 4
+Choose OS -> Raspberry Pi OS (64-bit)</code></pre>
+            <p>
+              Linkuri utile:
+              <a href="https://www.raspberrypi.com/documentation/installation/installing-images/">Raspberry Pi Documentation - Installing images</a>
+              |
+              <a href="https://www.raspberrypi.com/software/">Raspberry Pi Software / Imager</a>
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">2</span>
+          <div>
+            <h3>Scrie imaginea pe card</h3>
+            <p>Foloseste Raspberry Pi Imager sau balenaEtcher. Recomandarea principala este Raspberry Pi Imager.</p>
+            <p class="muted">Pentru imaginea folosita in proiect: hostname <code>rpi-licenta</code>, utilizator <code>rpi-licenta</code>, parola <code>licenta</code>.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">3</span>
+          <div>
+            <h3>Primul boot</h3>
+            <p>Monteaza ecranul pe GPIO si porneste sistemul. Pe Raspberry Pi OS oficial este normal sa folosesti initial HDMI sau o configurare asistata, deoarece driverul LCD nu este inca instalat.</p>
+            <p class="muted">Credentiale initiale pentru aceasta configuratie: utilizator <code>rpi-licenta</code>, parola <code>licenta</code>.</p>
+            <pre><code>whoami
+hostname
+pwd
+sudo -v</code></pre>
+            <p class="muted">Test rapid dupa login: <code>whoami</code> si <code>hostname</code> trebuie sa afiseze <code>rpi-licenta</code>, iar <code>sudo -v</code> trebuie sa accepte parola <code>licenta</code>.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">4</span>
+          <div>
+            <h3>Actualizare si configurare initiala</h3>
+            <pre><code>sudo apt update
+sudo apt full-upgrade -y
+sudo raspi-config</code></pre>
+            <p class="muted">Configureaza localizarea, timezone-ul, tastatura si tara Wi-Fi. Parola poate fi schimbata aici ulterior, daca vrei.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">5</span>
+          <div>
+            <h3>Instalare automata driver LCD</h3>
+            <pre><code>cd ~
+git clone https://github.com/Malikster/Proiect-Licenta-CPU-Principal.git
+cd Proiect-Licenta-CPU-Principal
+sudo bash 52pi/install.sh</code></pre>
+            <p class="muted">Varianta recomandata in repo: deschide meniul central de instalare. Pentru display, alege <code>1. Instalare ecran + touch</code>.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">6</span>
+          <div>
+            <h3>Instalare manuala driver LCD</h3>
+            <pre><code>sudo rm -rf LCD-show
+git clone https://github.com/goodtft/LCD-show.git
+chmod -R 755 LCD-show
+cd LCD-show
+sudo ./LCD35-show</code></pre>
+            <p class="muted">Aceasta pastraza sistemul oficial Raspberry Pi OS, dar adauga manual driverul third-party pentru display.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-index">7</span>
+          <div>
+            <h3>Calibrare touchscreen</h3>
+            <pre><code>sudo apt install -y xinput-calibrator</code></pre>
+            <p class="muted">Daca ai folosit scriptul <code>52pi/install.sh</code>, pachetul este deja instalat.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section" id="ap">
+      <h2>2. Configurare Raspberry Pi in modul Access Point</h2>
+      <div class="callout">
+        Varianta rapida: cloneaza repo-ul, ruleaza <code>sudo bash 52pi/install.sh</code> si alege <code>2. Configurare Raspberry Pi in modul Access Point</code>.
+      </div>
+      <div class="card">
+        <p>Configuratia recomandata pentru proiect:</p>
+        <table>
+          <tr><th>SSID</th><td><code>Licenta-RPi-AP</code></td></tr>
+          <tr><th>Parola</th><td><code>licenta-rpi</code></td></tr>
+          <tr><th>Interfata</th><td><code>wlan0</code></td></tr>
+          <tr><th>IP AP</th><td><code>192.168.4.1/24</code></td></tr>
+        </table>
+        <pre><code>nmcli device status
+sudo nmcli connection add type wifi ifname wlan0 con-name Licenta-RPi-AP autoconnect yes ssid Licenta-RPi-AP
+sudo nmcli connection modify Licenta-RPi-AP 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared ipv6.method disabled
+sudo nmcli connection modify Licenta-RPi-AP wifi-sec.key-mgmt wpa-psk
+sudo nmcli connection modify Licenta-RPi-AP wifi-sec.psk "licenta-rpi"
+sudo nmcli connection modify Licenta-RPi-AP ipv4.addresses 192.168.4.1/24
+sudo nmcli connection up Licenta-RPi-AP</code></pre>
+      </div>
+      <div class="callout">
+        Dupa configurare, Raspberry Pi devine nodul central de retea pentru restul subsistemelor.
+        Pentru WPA-PSK, parola trebuie sa aiba minimum 8 caractere.
+      </div>
+    </section>
+
+    <section class="section" id="mqtt">
+      <h2>3. Instalare broker MQTT</h2>
+      <div class="callout">
+        Varianta rapida: cloneaza repo-ul, ruleaza <code>sudo bash 52pi/install.sh</code> si alege <code>3. Instalare broker MQTT</code>.
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3>Instalare Mosquitto</h3>
+          <pre><code>sudo apt install -y mosquitto mosquitto-clients
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto</code></pre>
+        </article>
+        <article class="card">
+          <h3>Securizare minima recomandata</h3>
+          <pre><code>sudo mosquitto_passwd -c /etc/mosquitto/passwd licenta
+sudo nano /etc/mosquitto/conf.d/licenta.conf</code></pre>
+          <pre><code>listener 1883
+allow_anonymous false
+password_file /etc/mosquitto/passwd</code></pre>
+        </article>
+      </div>
+      <div class="card" style="margin-top: 18px;">
+        <h3>Test rapid</h3>
+        <pre><code>mosquitto_sub -h localhost -t test/local
+mosquitto_pub -h localhost -t test/local -m "Salut de pe Raspberry Pi"</code></pre>
+        <pre><code>mosquitto_sub -h localhost -u licenta -P licenta -t test/local
+mosquitto_pub -h localhost -u licenta -P licenta -t test/local -m "Salut de pe Raspberry Pi"</code></pre>
+      </div>
+      <div class="callout warn" style="margin-top: 18px;">
+        Daca Mosquitto nu porneste si vezi <code>status=13</code>, corecteaza permisiunile pentru
+        <code>/etc/mosquitto/passwd</code>:
+        <pre><code>sudo chown root:mosquitto /etc/mosquitto/passwd
+sudo chmod 640 /etc/mosquitto/passwd
+sudo systemctl restart mosquitto</code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="servicii">
+      <h2>4. Instalare servicii din proiect</h2>
+      <div class="callout">
+        Varianta rapida: cloneaza repo-ul, ruleaza <code>sudo bash 52pi/install.sh</code> si alege <code>4. Instalare servicii din proiect</code>.
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3>Serviciul de orchestrare MQTT</h3>
+          <p>Instaleaza serviciul din <code>scripts/</code>:</p>
+          <pre><code>git clone https://github.com/Malikster/Proiect-Licenta-CPU-Principal.git
+cd Proiect-Licenta-CPU-Principal
+sudo bash scripts/install_mqtt_status_service.sh
+sudo nano /etc/default/mqtt-status-service
+sudo systemctl restart mqtt-status-service.service</code></pre>
+            <p class="muted">
+              Acest serviciu monitorizeaza topicurile MQTT, mentine stare interna si republica statusurile relevante.
+              Topicuri importante: <code>LICENTA/ILUMINAT/STATUS</code>, <code>LICENTA/ACCES/STATUS</code> (JSON retained)
+              si <code>LICENTA/SANITAR/STATUS</code>.
+            </p>
+        </article>
+        <article class="card">
+          <h3>Aplicatia pentru ecran</h3>
+          <p>Instaleaza aplicatia locala din <code>ecran/</code>:</p>
+          <pre><code>sudo bash ecran/install_ecran_app.sh
+sudo nano /etc/default/ecran-app
+sudo systemctl restart ecran-app.service</code></pre>
+          <p class="muted">
+            UI-ul local ruleaza pe display-ul Raspberry Pi, cu tab-uri pentru Iluminat, Acces, Sanitar si Setari.
+            Butonul Wi-Fi din Setari poate crea si porni profilul AP daca lipseste.
+            La boot, serviciul asteapta sesiunea grafica locala si fisierul .Xauthority inainte sa porneasca aplicatia.
+            Installerul pune si o iconita pe desktop, plus autostart prin launcherul sesiunii grafice.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>5. Configuratii importante</h2>
+        <p class="muted">Poti precompleta rapid fisierele de configurare din meniul scriptului prin optiunea <code>5. Configuratii importante</code>.</p>
+        <div class="grid cols-2">
+          <article>
+            <h3>Configuratie MQTT service</h3>
+              <pre><code>MQTT_BROKER_HOST=127.0.0.1
+MQTT_BROKER_PORT=1883
+MQTT_USERNAME=licenta
+MQTT_PASSWORD=licenta
+SANITAR_SIMULATION_ENABLED=false
+SANITAR_SIM_TANK_CAPACITY_L=10
+SANITAR_SIM_INITIAL_R1_L=10
+SANITAR_SIM_INITIAL_R2_L=0
+SANITAR_SIM_FLOW_L_PER_MIN=1</code></pre>
+            </article>
+          <article>
+            <h3>Configuratie aplicatie ecran</h3>
+            <pre><code>MQTT_BROKER_HOST=127.0.0.1
+MQTT_BROKER_PORT=1883
+MQTT_USERNAME=licenta
+MQTT_PASSWORD=licenta
+ACCES_CAMERA_URL=http://192.168.4.3/camera.jpg
+WIFI_AP_CONNECTION=Licenta-RPi-AP
+WIFI_AP_SSID=Licenta-RPi-AP
+WIFI_AP_PASSWORD=licenta-rpi
+WIFI_AP_ADDRESS=192.168.4.1/24
+WIFI_CLIENT_CONNECTION=netplan-wlan0-MLK
+WIFI_INTERFACE=wlan0</code></pre>
+          </article>
+        </div>
+        <p class="muted">Daca actualizezi fisiere din <code>ecran/</code>, reruleaza <code>sudo bash ecran/install_ecran_app.sh</code>, nu doar restartul serviciului, pentru ca installerul actualizeaza si helperul Wi-Fi si regula din <code>/etc/sudoers.d/</code>.</p>
+        <p class="muted">Pentru simularea sanitara, meniul principal are acum optiunea <code>9. Configurare simulare sanitara</code>, care modifica valorile <code>SANITAR_SIM_*</code> din <code>/etc/default/mqtt-status-service</code> si reporneste serviciul.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>6. Integrarea cu Acces-Supraveghere</h2>
+        <p>
+          Sub-proiectul <strong>Acces-Supraveghere</strong> expune:
+        </p>
+        <ul class="list-clean">
+          <li><code>/camera.jpg</code> pentru preview-ul camerei</li>
+          <li><code>/status</code> pentru status HTTP</li>
+          <li><code>/garage/open</code>, <code>/garage/stop</code>, <code>/garage/close</code></li>
+          <li><code>/gate/unlock</code>, <code>/gate/lock</code></li>
+        </ul>
+        <p>
+          In exemplul de configurare statica din acel sub-proiect, placa foloseste IP-ul
+          <code>192.168.4.3</code>, iar UI-ul din <code>ecran/</code> foloseste implicit
+          <code>http://192.168.4.3/camera.jpg</code>.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="verificare">
+      <h2>7. Verificare finala</h2>
+      <div class="callout">
+        Varianta rapida: cloneaza repo-ul, ruleaza <code>sudo bash 52pi/install.sh</code> si alege <code>6. Verificare status servicii</code>.
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3>Servicii de sistem</h3>
+          <pre><code>sudo systemctl status mosquitto
+sudo systemctl status mqtt-status-service.service
+sudo systemctl status ecran-app.service</code></pre>
+        </article>
+        <article class="card">
+          <h3>Loguri live</h3>
+          <pre><code>sudo journalctl -u mosquitto -f
+sudo journalctl -u mqtt-status-service.service -f
+sudo journalctl -u ecran-app.service -f</code></pre>
+        </article>
+      </div>
+      <div class="callout" style="margin-top: 18px;">
+        Daca totul este configurat corect, Raspberry Pi va porni cu AP activ, broker MQTT functional, serviciul de
+        orchestrare pornit si aplicatia locala afisata direct pe ecran.
+      </div>
+    </section>
+
+    <footer class="footer">
+      Pagina poate fi deschisa direct din browser din fisierul <code>docs/instructiuni.html</code>.
+    </footer>
+  </div>
+</body>
+</html>

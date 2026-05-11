@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Licenta Pages</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5a6680;
+      --line: #dce2ee;
+      --accent: #1769aa;
+      --accent-dark: #0f4d7d;
+      --soft: #e9f3fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    main,
+    .header-inner {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 34px 0 28px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    main {
+      padding: 30px 0 44px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 1.35rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 188px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    a.button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 7px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a.button:hover,
+    a.button:focus {
+      background: var(--accent-dark);
+    }
+
+    .note {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+    }
+
+    code {
+      font-family: Consolas, "Liberation Mono", monospace;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Licenta Pages</h1>
+      <p class="lead">
+        Site central pentru documentatia sub-proiectelor din lucrarea de licenta. Fiecare folder din radacina
+        pastreaza continutul folderului <code>docs</code> din repo-ul sursa, redenumit dupa numele repo-ului.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <h2 class="section-title">Documentatie disponibila</h2>
+    <section class="grid" aria-label="Link-uri documentatie">
+      <article class="card">
+        <h2>Proiect-Licenta-CPU-Principal</h2>
+        <p>Documentatie pentru Raspberry Pi, Access Point, broker MQTT, serviciul de orchestrare si aplicatia de ecran.</p>
+        <div class="links">
+          <a class="button" href="Proiect-Licenta-CPU-Principal/index.html">Prezentare</a>
+          <a class="button" href="Proiect-Licenta-CPU-Principal/instructiuni.html">Instructiuni</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Proiect-Licenta-Iluminat</h2>
+        <p>Instructiuni pentru modulul de iluminat cu ESP12F si 8 relee, conectat la reteaua si brokerul CPU Principal.</p>
+        <div class="links">
+          <a class="button" href="Proiect-Licenta-Iluminat/instructiuni.html">Instructiuni</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Proiect-Licenta-Acces-Supraveghere</h2>
+        <p>Instructiuni pentru subsistemul de acces, supraveghere, camera, control garaj si control poarta.</p>
+        <div class="links">
+          <a class="button" href="Proiect-Licenta-Acces-Supraveghere/instructiuni.html">Instructiuni</a>
+        </div>
+      </article>
+    </section>
+
+    <p class="note">
+      La momentul agregarii, repo-urile <code>Proiect-Licenta-Aplicatie-Telefon</code> si
+      <code>Proiect-Licenta-Instalatia-Sanitara</code> nu aveau folder <code>docs</code> local, deci nu au fost copiate aici.
+    </p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proiect Licenta - Instructiuni ESP12F_Relay_30A_X8</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #18202a;
+      --muted: #516173;
+      --border: #d8e0ea;
+      --accent: #1f6feb;
+      --warn: #a15c00;
+      --warn-bg: #fff4db;
+      --code-bg: #f0f4f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin-top: 0;
+      color: #0f1720;
+    }
+
+    h1 { margin-bottom: 8px; }
+    h2 {
+      margin-top: 32px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    p, li { color: var(--text); }
+    .lead { color: var(--muted); margin-top: 0; }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+
+    .warning {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn);
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    code, pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4fb;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .mono-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Proiect Licenta - Instructiuni instalare si configurare</h1>
+    <p class="lead">
+      Ghid pentru programarea si configurarea modulului <code>ESP12F_Relay_30A_X8</code>
+      folosit in proiectul de iluminat.
+    </p>
+
+    <div class="warning">
+      <strong>Atentie:</strong> nu conecta sarcini de 230V la relee in timpul programarii.
+      Fa programarea cu placa alimentata doar pentru flash si teste de comunicatie.
+    </div>
+
+    <h2>1. Ce iti trebuie</h2>
+    <div class="panel">
+      <h3>Hardware</h3>
+      <ul>
+        <li>1 x <code>ESP12F_Relay_30A_X8</code></li>
+        <li>1 x <code>Arduino UNO</code> folosit ca adaptor USB-Serial</li>
+        <li>Cablu USB pentru Arduino UNO</li>
+        <li>Fire jumper mama-tata / tata-tata, in functie de conectori</li>
+        <li>Sursa pentru placa de relee, daca este necesara de placa folosita</li>
+      </ul>
+      <h3>Software</h3>
+      <ul>
+        <li>Arduino IDE</li>
+        <li>Pachetul de placi <code>ESP8266</code> pentru Arduino IDE</li>
+        <li>Biblioteca <code>PubSubClient</code> by Nick O'Leary</li>
+      </ul>
+    </div>
+
+    <h2>2. Fisierele din proiect</h2>
+    <div class="panel">
+      <ul class="mono-list">
+        <li><code>Proiect_Licenta_Iluminat/Proiect_Licenta_Iluminat.ino</code> - logica principala</li>
+        <li><code>Proiect_Licenta_Iluminat/config.h</code> - configurarea WiFi, MQTT, topicuri, pini</li>
+        <li><code>README.md</code> - rezumatul firmware-ului</li>
+      </ul>
+    </div>
+
+    <h2>3. Cum folosesti Arduino UNO ca adaptor USB-Serial</h2>
+    <div class="panel">
+      <p>
+        Arduino UNO nu va rula sketch-ul. El va fi folosit doar ca punte intre PC si ESP8266.
+      </p>
+      <ol>
+        <li>Conecteaza Arduino UNO la PC prin USB.</li>
+        <li>Dezactiveaza microcontrollerul UNO prin legarea pinului <code>RESET</code> la <code>GND</code>.</li>
+        <li>
+          Astfel, convertorul USB-Serial de pe UNO ramane disponibil, iar ATmega328P nu mai
+          interfereaza cu liniile seriale.
+        </li>
+      </ol>
+    </div>
+
+    <h2>4. Conexiunea intre PC -> Arduino UNO -> ESP12F_Relay_30A_X8</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arduino UNO</th>
+          <th>ESP12F_Relay_30A_X8</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>GND</code></td>
+          <td><code>GND</code></td>
+          <td>Masa comuna</td>
+        </tr>
+        <tr>
+          <td><code>D0 / RX</code></td>
+          <td><code>TX</code></td>
+          <td>Date trimise de ESP catre PC</td>
+        </tr>
+        <tr>
+          <td><code>D1 / TX</code></td>
+          <td><code>RX</code></td>
+          <td>Date trimise de PC catre ESP</td>
+        </tr>
+        <tr>
+          <td><code>5V</code></td>
+          <td><code>5V</code></td>
+          <td>Alimentare pentru modul, doar daca placa accepta 5V pe pinul respectiv</td>
+        </tr>
+        <tr>
+          <td><code>GND</code></td>
+          <td><code>GPIO0</code></td>
+          <td>Activeaza modul de flash in timpul incarcarii</td>
+        </tr>
+        <tr>
+          <td><code>RESET</code> legat la <code>GND</code></td>
+          <td>-</td>
+          <td>Dezactiveaza microcontrollerul Arduino UNO</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warning">
+      <strong>Observatie:</strong> la aceasta placa, <code>GPIO0</code> trebuie dus la <code>GND</code>
+      doar pentru programare. Dupa upload, scoate aceasta legatura si reporneste placa.
+    </div>
+
+    <h2>5. Ordinea recomandata pentru conectare</h2>
+    <div class="panel">
+      <ol>
+        <li>Conecteaza UNO la PC prin USB.</li>
+        <li>Leaga <code>RESET</code> de pe UNO la <code>GND</code>.</li>
+        <li>Realizeaza conexiunile seriale UNO -> placa ESP.</li>
+        <li>Leaga <code>GPIO0</code> la <code>GND</code> pe placa ESP.</li>
+        <li>Alimenteaza placa ESP.</li>
+        <li>Deschide Arduino IDE si pregateste upload-ul.</li>
+      </ol>
+    </div>
+
+    <h2>6. Configurarea Arduino IDE</h2>
+    <div class="panel">
+      <h3>6.1 Instalare suport ESP8266</h3>
+      <ol>
+        <li>Deschide <code>File -> Preferences</code>.</li>
+        <li>
+          In campul <code>Additional Boards Manager URLs</code> adauga:
+          <pre>http://arduino.esp8266.com/stable/package_esp8266com_index.json</pre>
+        </li>
+        <li>Apasa <code>OK</code>.</li>
+        <li>Deschide <code>Tools -> Board -> Boards Manager</code>.</li>
+        <li>Cauta <code>ESP8266</code> si instaleaza pachetul.</li>
+      </ol>
+
+      <h3>6.2 Instalare biblioteca MQTT</h3>
+      <ol>
+        <li>Deschide <code>Sketch -> Include Library -> Manage Libraries</code>.</li>
+        <li>Cauta <code>PubSubClient</code>.</li>
+        <li>Instaleaza biblioteca <code>PubSubClient by Nick O'Leary</code>.</li>
+      </ol>
+
+      <h3>6.3 Selectia placii si a portului</h3>
+      <ul>
+        <li><code>Tools -> Board -> ESP8266 Boards -> Generic ESP8266 Module</code></li>
+        <li><code>Tools -> Port</code> -> selecteaza portul pe care apare Arduino UNO</li>
+      </ul>
+    </div>
+
+    <h2>7. Setari recomandate in Arduino IDE pentru upload</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Setare</th>
+          <th>Valoare recomandata</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Board</td><td><code>Generic ESP8266 Module</code></td></tr>
+        <tr><td>Flash Mode</td><td><code>DIO</code></td></tr>
+        <tr><td>Flash Frequency</td><td><code>40MHz</code></td></tr>
+        <tr><td>CPU Frequency</td><td><code>80MHz</code></td></tr>
+        <tr><td>Flash Size</td><td><code>4MB (FS:1MB OTA:~1019KB)</code> sau alta varianta de 4MB</td></tr>
+        <tr><td>Upload Speed</td><td><code>115200</code></td></tr>
+        <tr><td>Port</td><td>Portul serial al Arduino UNO</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warning">
+      Daca upload-ul esueaza, scade <code>Upload Speed</code> la <code>57600</code> sau <code>9600</code>.
+    </div>
+
+    <h2>8. Configurarea firmware-ului</h2>
+    <div class="panel">
+      <p>
+        Deschide fisierul <code>Proiect_Licenta_Iluminat/config.h</code> si completeaza:
+      </p>
+      <pre>const char* WIFI_SSID = "Licenta-RPi-AP";
+const char* WIFI_PASSWORD = "licenta-rpi";
+const IPAddress WIFI_LOCAL_IP(192, 168, 4, 2);
+const IPAddress WIFI_GATEWAY(192, 168, 4, 1);
+const IPAddress WIFI_SUBNET(255, 255, 255, 0);
+const IPAddress WIFI_DNS(192, 168, 4, 1);
+const char* MQTT_BROKER = "192.168.4.1";
+const uint16_t MQTT_PORT = 1883;
+const char* MQTT_USER = "licenta";
+const char* MQTT_PASSWORD = "licenta";</pre>
+      <p>
+        Adresa IP fixa a modulului ESP in reteaua WiFi este:
+      </p>
+      <pre>192.168.4.2</pre>
+      <p>
+        Topicurile folosite de firmware sunt:
+      </p>
+      <pre>LICENTA/ILUMINAT/COMANDA
+LICENTA/ILUMINAT/STATUS</pre>
+    </div>
+
+    <h2>9. Scrierea sketch-ului pe placa</h2>
+    <div class="panel">
+      <ol>
+        <li>Deschide <code>Proiect_Licenta_Iluminat/Proiect_Licenta_Iluminat.ino</code> in Arduino IDE.</li>
+        <li>Verifica faptul ca <code>config.h</code> este completat.</li>
+        <li>Asigura-te ca <code>GPIO0</code> este legat la <code>GND</code>.</li>
+        <li>Apasa <code>Verify</code> pentru compilare.</li>
+        <li>Apasa <code>Upload</code>.</li>
+        <li>Daca este nevoie, reporneste placa exact in momentul inceperii upload-ului.</li>
+        <li>Asteapta mesajul <code>Done uploading</code>.</li>
+      </ol>
+    </div>
+
+    <h2>10. Dupa upload</h2>
+    <div class="panel">
+      <ol>
+        <li>Deconecteaza <code>GPIO0</code> de la <code>GND</code>.</li>
+        <li>Reporneste placa ESP.</li>
+        <li>Deschide <code>Serial Monitor</code> la <code>115200 baud</code>.</li>
+        <li>Verifica mesajele de conectare la WiFi si brokerul MQTT.</li>
+      </ol>
+    </div>
+
+    <h2>11. Comportamentul firmware-ului</h2>
+    <div class="panel">
+      <ul>
+        <li>ESP se conecteaza la WiFi-ul creat de Raspberry Pi.</li>
+        <li>ESP se conecteaza la brokerul MQTT de pe Raspberry Pi.</li>
+        <li>Asculta topicul <code>LICENTA/ILUMINAT/COMANDA</code>.</li>
+        <li>Accepta comenzi de forma <code>RELEU-X-Y</code>.</li>
+        <li>
+          La fiecare reconectare MQTT, asculta topicul <code>LICENTA/ILUMINAT/STATUS</code>,
+          aplica primul mesaj valid de forma <code>ABCDEFGH</code>, apoi se dezaboneaza de la status
+          pana la urmatoarea reconectare.
+        </li>
+      </ul>
+    </div>
+
+    <h2>12. Exemple de mesaje MQTT</h2>
+    <div class="panel">
+      <h3>Comenzi</h3>
+      <pre>RELEU-1-1
+RELEU-2-0
+RELEU-8-1</pre>
+
+      <h3>Status publicat de Raspberry Pi</h3>
+      <pre>10000001</pre>
+      <p>
+        Interpretare: releul 1 pornit, releele 2-7 oprite, releul 8 pornit.
+      </p>
+    </div>
+
+    <h2>13. Probleme frecvente</h2>
+    <div class="panel">
+      <ul>
+        <li>Daca nu porneste upload-ul, verifica <code>GPIO0 -> GND</code> si reporneste placa.</li>
+        <li>Daca apar erori seriale, verifica inversarea corecta a pinilor <code>TX/RX</code>.</li>
+        <li>Daca placa nu intra pe WiFi, verifica valorile din <code>config.h</code>.</li>
+        <li>Daca releele nu revin la starea dorita dupa restart, Raspberry Pi trebuie sa retrimita sau sa retina mesajul de status.</li>
+        <li>Daca placa se reseteaza in timpul WiFi, verifica alimentarea. ESP8266 este sensibil la surse slabe.</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

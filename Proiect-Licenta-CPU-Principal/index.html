@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPU Principal - Proiect Licenta</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <span class="eyebrow">Proiect Licenta</span>
+      <h1>CPU Principal</h1>
+      <p class="lede">
+        Nucleul de integrare al proiectului ruleaza pe Raspberry Pi 4 si unifica retea locala, broker MQTT,
+        orchestrare de stare si interfata tactila locala pe ecranul rezistiv de 3.5".
+      </p>
+      <nav class="nav" aria-label="Navigatie principala">
+        <a class="primary" href="instructiuni.html">Instructiuni de instalare</a>
+        <a href="#hardware">Hardware</a>
+        <a href="#software">Software</a>
+        <a href="#subsisteme">Subsisteme</a>
+        <a href="#repo">Structura repo</a>
+      </nav>
+      <div class="kpis">
+        <div class="kpi">
+          <strong>Raspberry Pi 4</strong>
+          <span class="muted">CPU principal al sistemului</span>
+        </div>
+        <div class="kpi">
+          <strong>480x320</strong>
+          <span class="muted">Rezolutia ecranului tactil local</span>
+        </div>
+        <div class="kpi">
+          <strong>MQTT + HTTP</strong>
+          <span class="muted">Canale de integrare intre module</span>
+        </div>
+        <div class="kpi">
+          <strong>AP local</strong>
+          <span class="muted">Retea Wi-Fi creata de Raspberry Pi</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section grid cols-2" id="hardware">
+      <article class="card">
+        <h2>Platforma hardware</h2>
+        <p>
+          Proiectul foloseste un <strong>Raspberry Pi 4 Model B</strong> montat intr-o carcasa cu
+          <strong>ecran touchscreen rezistiv de 3.5 inch</strong>, rezolutie <strong>480x320</strong>,
+          radiator si ventilator.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Broadcom BCM2711</span>
+          <span class="pill">Quad-core Cortex-A72</span>
+          <span class="pill">Wi-Fi 2.4/5 GHz</span>
+          <span class="pill">GPIO 40 pini</span>
+        </div>
+      </article>
+      <article class="card">
+        <h2>De ce aceasta alegere</h2>
+        <ul class="list-clean">
+          <li>Ruleaza aplicatia principala si serviciile de integrare.</li>
+          <li>Poate afisa direct interfata locala pentru operator.</li>
+          <li>Poate gazdui retea Wi-Fi locala in modul Access Point.</li>
+          <li>Poate rula broker MQTT si servicii systemd la boot.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section" id="software">
+      <div class="card">
+        <h2>Arhitectura software</h2>
+        <div class="grid cols-3">
+          <article>
+            <h3>Retea locala</h3>
+            <p class="muted">
+              Raspberry Pi porneste in modul AP si creeaza reteaua la care se conecteaza subsistemele.
+            </p>
+            <pre><code>SSID: Licenta-RPi-AP
+IP AP: 10.42.0.1</code></pre>
+          </article>
+          <article>
+            <h3>Broker MQTT</h3>
+            <p class="muted">
+              Mosquitto ruleaza local si asigura schimbul de mesaje intre CPU Principal si module.
+            </p>
+            <pre><code>Broker: 10.42.0.1
+Port: 1883</code></pre>
+          </article>
+          <article>
+            <h3>UI local</h3>
+            <p class="muted">
+              Aplicatia din <code>ecran/</code> ruleaza pe display-ul tactil si expune controale pentru operator.
+            </p>
+            <pre><code>Tabs: Iluminat
+      Acces
+      Sanitar</code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="subsisteme">
+      <h2>Subsisteme integrate</h2>
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>Iluminat</h3>
+          <p>Controleaza 8 relee prin MQTT.</p>
+          <table>
+            <tr><th>Topic comanda</th><td><code>LICENTA/ILUMINAT/COMANDA</code></td></tr>
+            <tr><th>Topic status</th><td><code>LICENTA/ILUMINAT/STATUS</code></td></tr>
+            <tr><th>Model</th><td>Stare canonica mentinuta central pe Raspberry Pi</td></tr>
+          </table>
+        </article>
+        <article class="card">
+          <h3>Acces-Supraveghere</h3>
+          <p>Control pentru garaj, poarta si camera ESP32-S3-CAM.</p>
+          <table>
+            <tr><th>MQTT</th><td><code>LICENTA/ACCES/GARAJ</code>, <code>LICENTA/ACCES/POARTA</code></td></tr>
+            <tr><th>HTTP</th><td><code>/status</code>, <code>/camera.jpg</code></td></tr>
+            <tr><th>Preview camera</th><td><code>http://192.168.4.3/camera.jpg</code></td></tr>
+          </table>
+        </article>
+        <article class="card">
+          <h3>Instalatia Sanitara</h3>
+          <p>Integrare MQTT bidirectionala pentru moduri, valva, pompa si niveluri.</p>
+          <table>
+            <tr><th>Topic comanda</th><td><code>LICENTA/SANITAR/COMANDA</code></td></tr>
+            <tr><th>Topic status</th><td><code>LICENTA/SANITAR/STATUS</code></td></tr>
+            <tr><th>Status scurt</th><td><code>ABC</code> + mesaje <code>NIVEL-*</code></td></tr>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="repo">
+      <div class="card">
+        <h2>Structura repository-ului</h2>
+        <div class="grid cols-2">
+          <article>
+            <h3>Documentatie</h3>
+            <ul class="list-clean">
+              <li><code>readme.md</code> - prezentare generala</li>
+              <li><code>tutorial-instalare-rpi4-ap.md</code> - Linux + Access Point</li>
+              <li><code>tutorial-instalare-mqtt-broker.md</code> - broker MQTT</li>
+              <li><code>docs/</code> - pagini HTML statice</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Componente executabile</h3>
+            <ul class="list-clean">
+              <li><code>scripts/</code> - serviciu de orchestrare MQTT + autostart</li>
+              <li><code>ecran/</code> - aplicatie tactila + autostart</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="callout">
+        <strong>Flux recomandat de pornire:</strong>
+        instalezi Raspberry Pi OS pentru ecran, configurezi AP-ul, instalezi brokerul MQTT, apoi serviciul din
+        <code>scripts/</code> si aplicatia din <code>ecran/</code>.
+      </div>
+      <div class="nav" style="margin-top: 18px;">
+        <a class="primary" href="instructiuni.html">Deschide instructiunile complete</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Pagina poate fi deschisa direct din browser din fisierul <code>docs/index.html</code>.
+    </footer>
+  </div>
+</body>
+</html>
