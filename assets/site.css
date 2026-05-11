@@ -1,0 +1,245 @@
+:root {
+  color-scheme: light;
+  --site-bg: #f5f7fb;
+  --site-panel: #ffffff;
+  --site-panel-alt: #f0f4f9;
+  --site-text: #172033;
+  --site-muted: #5a6680;
+  --site-line: #dce2ee;
+  --site-accent: #1769aa;
+  --site-accent-dark: #0f4d7d;
+  --site-green: #1f7a55;
+  --site-red: #a53d3d;
+  --site-amber: #9a6514;
+  --site-soft: #e9f3fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--site-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--site-bg) !important;
+  color: var(--site-text) !important;
+  font-family: "Segoe UI", Arial, sans-serif !important;
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+
+body::before {
+  content: "Licenta Pages";
+  display: block;
+  padding: 10px 16px;
+  background: var(--site-accent);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+header,
+.hero,
+.page-header {
+  background: var(--site-panel) !important;
+  color: var(--site-text) !important;
+  border-bottom: 1px solid var(--site-line);
+  box-shadow: none !important;
+}
+
+main,
+.header-inner,
+.container,
+.wrap,
+.content {
+  width: min(1120px, calc(100% - 32px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+main {
+  padding: 28px 0 44px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--site-text) !important;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+p,
+li,
+td,
+th {
+  color: inherit;
+}
+
+a {
+  color: var(--site-accent);
+}
+
+a:hover,
+a:focus {
+  color: var(--site-accent-dark);
+}
+
+a.button,
+.button,
+button,
+input[type="button"],
+input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--site-accent) !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+a.button:hover,
+a.button:focus,
+.button:hover,
+.button:focus,
+button:hover,
+button:focus {
+  background: var(--site-accent-dark) !important;
+  color: #ffffff !important;
+}
+
+.card,
+.panel,
+section,
+article,
+.box,
+.step,
+.module {
+  background: var(--site-panel) !important;
+  color: var(--site-text) !important;
+  border: 1px solid var(--site-line) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.card,
+.panel,
+section,
+article {
+  padding: 18px;
+}
+
+.grid,
+.cards,
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.note,
+.muted,
+.lead,
+.desc,
+small {
+  color: var(--site-muted) !important;
+}
+
+.note,
+blockquote {
+  background: var(--site-soft) !important;
+  border: 1px solid var(--site-line) !important;
+  border-radius: 8px !important;
+  padding: 14px 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--site-panel);
+  border: 1px solid var(--site-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--site-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--site-panel-alt);
+  color: var(--site-muted) !important;
+  font-weight: 700;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+pre,
+code {
+  font-family: Consolas, "Liberation Mono", monospace;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 14px 16px;
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border-radius: 8px;
+}
+
+pre code {
+  color: inherit !important;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--site-line);
+}
+
+@media (max-width: 760px) {
+  main,
+  .header-inner,
+  .container,
+  .wrap,
+  .content {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .card,
+  .panel,
+  section,
+  article {
+    padding: 14px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
