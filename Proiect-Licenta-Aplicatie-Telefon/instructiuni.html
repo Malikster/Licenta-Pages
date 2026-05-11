@@ -158,6 +158,7 @@
 </head>
 <body>
   <a class="site-home-link" href="../index.html">Sistem automatizare instalatii electrice tip Smart-House folosind Arduino</a>
+
   <header>
     <div class="wrap">
       <h1>Instructiuni de folosire</h1>
@@ -312,6 +313,11 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk</code></pre>
             <td>subscribe</td>
             <td>Status sanitar scurt, niveluri si debit</td>
           </tr>
+          <tr>
+            <td><code>LICENTA/SONERIE/COMANDA</code></td>
+            <td>subscribe</td>
+            <td>Eveniment sonerie; afiseaza notificare Android cu sunet</td>
+          </tr>
         </tbody>
       </table>
 
@@ -353,6 +359,11 @@ NIVEL-1-075
 NIVEL-2-040
 DEBIT-001</code></pre>
       <p><code>DEBIT-000</code> se afiseaza ca <code>0 L/min</code>, iar <code>DEBIT-001</code> ca <code>1 L/min</code>.</p>
+
+      <h3>Format <code>LICENTA/SONERIE/COMANDA</code></h3>
+      <p>Aplicatia afiseaza o notificare Android cand primeste un mesaj nou, neretained, pe topicul soneriei.</p>
+      <pre><code>{"event":"pressed","source":"test","timestamp":"2026-05-11T00:00:00Z"}</code></pre>
+      <p>Notificarea are titlul <code>Sonerie</code> si textul <code>Cineva a apasat soneria</code>.</p>
     </section>
 
     <section id="pagini">
@@ -404,6 +415,6 @@ DEBIT-001</code></pre>
   <footer>
     <p>Documentatie pentru Proiect-Licenta-Aplicatie-Telefon.</p>
   </footer>
-  <script src="assets/site.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@
 </head>
 <body>
   <a class="site-home-link" href="../index.html">Sistem automatizare instalatii electrice tip Smart-House folosind Arduino</a>
+
   <div class="shell">
     <header class="hero">
       <span class="eyebrow">Proiect Licenta</span>
@@ -34,8 +35,8 @@
           <span class="muted">Rezolutia ecranului tactil local</span>
         </div>
         <div class="kpi">
-          <strong>MQTT + HTTP</strong>
-          <span class="muted">Canale de integrare intre module</span>
+          <strong>MQTT + WS + HTTP</strong>
+          <span class="muted">Canale de integrare intre module si site</span>
         </div>
         <div class="kpi">
           <strong>AP local</strong>
@@ -80,15 +81,16 @@
               Raspberry Pi porneste in modul AP si creeaza reteaua la care se conecteaza subsistemele.
             </p>
             <pre><code>SSID: Licenta-RPi-AP
-IP AP: 10.42.0.1</code></pre>
+IP AP: 192.168.4.1</code></pre>
           </article>
           <article>
             <h3>Broker MQTT</h3>
             <p class="muted">
               Mosquitto ruleaza local si asigura schimbul de mesaje intre CPU Principal si module.
             </p>
-            <pre><code>Broker: 10.42.0.1
-Port: 1883</code></pre>
+            <pre><code>Broker: 192.168.4.1
+MQTT: 1883
+WebSocket: 9001</code></pre>
           </article>
           <article>
             <h3>UI local</h3>
@@ -97,7 +99,9 @@ Port: 1883</code></pre>
             </p>
             <pre><code>Tabs: Iluminat
       Acces
-      Sanitar</code></pre>
+      Sanitar
+      Sonerie
+      Setari</code></pre>
           </article>
         </div>
       </div>
@@ -131,6 +135,15 @@ Port: 1883</code></pre>
             <tr><th>Topic comanda</th><td><code>LICENTA/SANITAR/COMANDA</code></td></tr>
             <tr><th>Topic status</th><td><code>LICENTA/SANITAR/STATUS</code></td></tr>
             <tr><th>Status scurt</th><td><code>ABC</code> + mesaje <code>NIVEL-*</code></td></tr>
+          </table>
+        </article>
+        <article class="card">
+          <h3>Sonerie</h3>
+          <p>Buton local pe ecran pentru trimiterea unui eveniment de sonerie catre restul sistemului.</p>
+          <table>
+            <tr><th>Topic comanda</th><td><code>LICENTA/SONERIE/COMANDA</code></td></tr>
+            <tr><th>Payload</th><td><code>{"event":"pressed","source":"CPU-Ecran","timestamp":"ISO-8601"}</code></td></tr>
+            <tr><th>Retained</th><td>Nu</td></tr>
           </table>
         </article>
       </div>
@@ -175,6 +188,6 @@ Port: 1883</code></pre>
       Pagina poate fi deschisa direct din browser din fisierul <code>docs/index.html</code>.
     </footer>
   </div>
-  <script src="assets/site.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

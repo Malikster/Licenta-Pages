@@ -9,6 +9,7 @@
 </head>
 <body>
   <a class="site-home-link" href="../index.html">Sistem automatizare instalatii electrice tip Smart-House folosind Arduino</a>
+
   <div class="shell">
     <header class="hero">
       <span class="eyebrow">Instalare</span>
@@ -160,9 +161,16 @@ sudo systemctl start mosquitto</code></pre>
           <h3>Securizare minima recomandata</h3>
           <pre><code>sudo mosquitto_passwd -c /etc/mosquitto/passwd licenta
 sudo nano /etc/mosquitto/conf.d/licenta.conf</code></pre>
-          <pre><code>listener 1883
+          <pre><code>per_listener_settings false
 allow_anonymous false
-password_file /etc/mosquitto/passwd</code></pre>
+password_file /etc/mosquitto/passwd
+
+listener 1883
+protocol mqtt
+
+listener 9001
+protocol websockets</code></pre>
+          <p class="muted">Listenerul <code>1883</code> este pentru MQTT clasic, iar <code>9001</code> este pentru MQTT over WebSocket folosit de site. Ambele folosesc acelasi fisier de parole.</p>
         </article>
       </div>
       <div class="card" style="margin-top: 18px;">
@@ -171,6 +179,9 @@ password_file /etc/mosquitto/passwd</code></pre>
 mosquitto_pub -h localhost -t test/local -m "Salut de pe Raspberry Pi"</code></pre>
         <pre><code>mosquitto_sub -h localhost -u licenta -P licenta -t test/local
 mosquitto_pub -h localhost -u licenta -P licenta -t test/local -m "Salut de pe Raspberry Pi"</code></pre>
+        <p class="muted">Test pentru topicul de sonerie, util de pe laptop cand esti conectat la reteaua AP:</p>
+        <pre><code>mosquitto_sub -h 192.168.4.1 -p 1883 -u licenta -P licenta -t 'LICENTA/SONERIE/COMANDA' -v</code></pre>
+        <p class="muted">Cand apesi butonul <strong>Trimite soneria</strong> din tabul Sonerie, trebuie sa apara un JSON cu <code>event</code>, <code>source</code> si <code>timestamp</code>.</p>
       </div>
       <div class="callout warn" style="margin-top: 18px;">
         Daca Mosquitto nu porneste si vezi <code>status=13</code>, corecteaza permisiunile pentru
@@ -198,7 +209,8 @@ sudo systemctl restart mqtt-status-service.service</code></pre>
             <p class="muted">
               Acest serviciu monitorizeaza topicurile MQTT, mentine stare interna si republica statusurile relevante.
               Topicuri importante: <code>LICENTA/ILUMINAT/STATUS</code>, <code>LICENTA/ACCES/STATUS</code> (JSON retained)
-              si <code>LICENTA/SANITAR/STATUS</code>.
+              si <code>LICENTA/SANITAR/STATUS</code>. Pentru sonerie, aplicatia de ecran publica evenimente pe
+              <code>LICENTA/SONERIE/COMANDA</code>.
             </p>
         </article>
         <article class="card">
@@ -208,7 +220,7 @@ sudo systemctl restart mqtt-status-service.service</code></pre>
 sudo nano /etc/default/ecran-app
 sudo systemctl restart ecran-app.service</code></pre>
           <p class="muted">
-            UI-ul local ruleaza pe display-ul Raspberry Pi, cu tab-uri pentru Iluminat, Acces, Sanitar si Setari.
+            UI-ul local ruleaza pe display-ul Raspberry Pi, cu tab-uri pentru Iluminat, Acces, Sanitar, Sonerie si Setari.
             Butonul Wi-Fi din Setari poate crea si porni profilul AP daca lipseste.
             La boot, serviciul asteapta sesiunea grafica locala si fisierul .Xauthority inainte sa porneasca aplicatia.
             Installerul pune si o iconita pe desktop, plus autostart prin launcherul sesiunii grafice.
@@ -284,7 +296,8 @@ WIFI_INTERFACE=wlan0</code></pre>
           <h3>Servicii de sistem</h3>
           <pre><code>sudo systemctl status mosquitto
 sudo systemctl status mqtt-status-service.service
-sudo systemctl status ecran-app.service</code></pre>
+sudo systemctl status ecran-app.service
+sudo ss -ltnp | grep -E '1883|9001'</code></pre>
         </article>
         <article class="card">
           <h3>Loguri live</h3>
@@ -303,6 +316,6 @@ sudo journalctl -u ecran-app.service -f</code></pre>
       Pagina poate fi deschisa direct din browser din fisierul <code>docs/instructiuni.html</code>.
     </footer>
   </div>
-  <script src="assets/site.js"></script>
+  <script src="../assets/site.js"></script>
 </body>
 </html>

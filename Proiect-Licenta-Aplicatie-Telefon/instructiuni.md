@@ -108,6 +108,7 @@ Aplicatia foloseste urmatoarele topicuri:
 | `LICENTA/ILUMINAT/STATUS` | subscribe | Status 8 biti pentru circuitele de iluminat |
 | `LICENTA/SANITAR/COMANDA` | publish | Comenzi AUTO/MANUAL, valva si pompa |
 | `LICENTA/SANITAR/STATUS` | subscribe | Status sanitar scurt, niveluri si debit |
+| `LICENTA/SONERIE/COMANDA` | subscribe | Eveniment sonerie; afiseaza notificare Android cu sunet |
 
 ### Format `LICENTA/ACCES/STATUS`
 
@@ -172,6 +173,18 @@ DEBIT-001
 ```
 
 Debitul este afisat ca valoare in `L/min`, de exemplu `DEBIT-000` devine `0 L/min`, iar `DEBIT-001` devine `1 L/min`.
+
+### Format `LICENTA/SONERIE/COMANDA`
+
+Aplicatia afiseaza o notificare Android cand primeste un mesaj nou, neretained, pe topicul soneriei.
+
+Exemplu:
+
+```json
+{"event":"pressed","source":"test","timestamp":"2026-05-11T00:00:00Z"}
+```
+
+Notificarea are titlul `Sonerie` si textul `Cineva a apasat soneria`.
 
 ## Pagini si utilizare
 
