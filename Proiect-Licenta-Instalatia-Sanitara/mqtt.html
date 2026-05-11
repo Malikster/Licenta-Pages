@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schema MQTT - Instalatia Sanitara</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fc;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #586379;
+      --accent: #1367d6;
+      --border: #d8e0eb;
+      --soft: #eef4ff;
+      --ok: #e8f7ef;
+      --warn: #fff4e6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    h2 {
+      margin-top: 28px;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .step strong {
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .step.auto {
+      background: var(--ok);
+    }
+
+    .step.manual {
+      background: var(--warn);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code {
+      background: #eef3fb;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Schema MQTT si Logica AUTO/MANUAL</h1>
+      <p class="lead">
+        Pagina rezuma modul in care firmware-ul instalatiei sanitare primeste comenzi,
+        publica status si comuta intre modul automat si manual.
+      </p>
+      <p>
+        Resurse asociate:
+        <a href="../index.html">prezentare proiect</a> |
+        <a href="instructiuni.html">instructiuni complete</a> |
+        <a href="hardware.html">schema hardware</a> |
+        <a href="schema-instalatie.html">schema vizuala</a> |
+        <a href="instructiuni.md">ghid Markdown</a>
+      </p>
+    </header>
+
+    <section>
+      <h2>Topicuri MQTT</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Comenzi</h3>
+          <p><code>LICENTA/SANITAR/COMANDA</code></p>
+          <p>Topicul pe care firmware-ul asculta comenzile de operare.</p>
+        </div>
+        <div class="card">
+          <h3>Status</h3>
+          <p><code>LICENTA/SANITAR/STATUS</code></p>
+          <p>Topicul pe care firmware-ul publica statusul real pentru afisaje si restul sistemului.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Comenzi acceptate</h2>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Mesaj</th>
+              <th>Efect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>AUTO-1</code></td><td>Comuta firmware-ul in modul <code>AUTO</code>.</td></tr>
+            <tr><td><code>AUTO-0</code></td><td>Comuta firmware-ul in modul <code>MANUAL</code>, inchide valva si opreste pompa.</td></tr>
+            <tr><td><code>POMPA-A</code></td><td>Porneste pompa in directia <code>R1 -&gt; R2</code>.</td></tr>
+            <tr><td><code>POMPA-B</code></td><td>Porneste pompa in directia <code>R2 -&gt; R1</code>.</td></tr>
+            <tr><td><code>POMPA-0</code></td><td>Opreste pompa.</td></tr>
+            <tr><td><code>VALVA-1</code></td><td>Deschide valva.</td></tr>
+            <tr><td><code>VALVA-0</code></td><td>Inchide valva.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Status publicat</h2>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Mesaj</th>
+              <th>Semnificatie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ABC</code></td>
+              <td>
+                <code>A</code> = mod (<code>0</code> manual, <code>1</code> auto),
+                <code>B</code> = valva (<code>0</code> inchisa, <code>1</code> deschisa),
+                <code>C</code> = pompa (<code>0</code> stop, <code>1</code> R1 -&gt; R2, <code>2</code> R2 -&gt; R1)
+              </td>
+            </tr>
+            <tr><td><code>NIVEL-1-XYZ</code></td><td>Nivelul rezervorului R1 in procente, pe 3 cifre.</td></tr>
+            <tr><td><code>NIVEL-2-XYZ</code></td><td>Nivelul rezervorului R2 in procente, pe 3 cifre.</td></tr>
+            <tr><td><code>DEBIT-XYZ</code></td><td>Debit real in L/min, rotunjit si formatat pe 3 cifre.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Fluxul modurilor</h2>
+      <div class="flow">
+        <div class="step auto">
+          <strong>1. Activare AUTO</strong>
+          <p>Mesajul <code>AUTO-1</code> trece firmware-ul in modul automat. Statusul este republicat imediat.</p>
+        </div>
+        <div class="step auto">
+          <strong>2. Decizie automata dupa nivel</strong>
+          <ul>
+            <li>daca nivelul in R1 depaseste pragul maxim, valva se deschide;</li>
+            <li>daca nivelul in R1 scade sub pragul minim, valva se inchide;</li>
+            <li>daca nivelul in R2 depaseste pragul maxim, pompa merge <code>R2 -&gt; R1</code>;</li>
+            <li>daca nivelul in R2 scade sub pragul minim, pompa se opreste.</li>
+          </ul>
+        </div>
+        <div class="step manual">
+          <strong>3. Activare MANUAL</strong>
+          <p>Mesajul <code>AUTO-0</code> trece firmware-ul in modul manual, inchide valva si opreste pompa imediat.</p>
+        </div>
+        <div class="step manual">
+          <strong>4. Control manual</strong>
+          <p>In modul manual, comenzile <code>POMPA-A</code>, <code>POMPA-B</code>, <code>POMPA-0</code>, <code>VALVA-1</code> si <code>VALVA-0</code> sunt executate direct.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Conventii importante</h2>
+      <div class="panel">
+        <ul>
+          <li><code>POMPA-A</code> trebuie sa ramana conventia pentru <code>R1 -&gt; R2</code>.</li>
+          <li><code>POMPA-B</code> trebuie sa ramana conventia pentru <code>R2 -&gt; R1</code>.</li>
+          <li>Cand simularea din CPU Principal este oprita, valorile reale publicate de firmware devin sursa pentru afisaje.</li>
+          <li>Statusul se publica periodic si imediat dupa schimbari de pompa sau valva.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

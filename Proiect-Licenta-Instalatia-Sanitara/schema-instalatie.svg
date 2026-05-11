@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Schema vizuala a instalatiei sanitare</title>
+  <desc id="desc">Diagrama cu doua rezervoare, senzori JSN-SR04T, plutitori, debitmetru, valva, pompa bidirectionala, ESP32 OLED, MQTT si alimentari.</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#1f6fd6"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#20885b"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#c26a12"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#b84242"/>
+    </marker>
+    <style>
+      .bg { fill: #f7faff; }
+      .panel { fill: #ffffff; stroke: #d8e0eb; stroke-width: 2; }
+      .tank { fill: #e8f4ff; stroke: #2460a8; stroke-width: 3; }
+      .water { fill: #83c5f4; opacity: 0.72; }
+      .pipe { fill: none; stroke: #1f6fd6; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowBlue); }
+      .pipeBi { fill: none; stroke: #20885b; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrowGreen); }
+      .control { fill: none; stroke: #6b7280; stroke-width: 3; stroke-dasharray: 8 7; }
+      .power12 { fill: none; stroke: #b84242; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrowRed); }
+      .power6 { fill: none; stroke: #c26a12; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrowOrange); }
+      .ground { fill: none; stroke: #4b5563; stroke-width: 3; stroke-dasharray: 5 6; }
+      .device { fill: #ffffff; stroke: #334155; stroke-width: 2.5; }
+      .sensor { fill: #fff7ed; stroke: #c26a12; stroke-width: 2.5; }
+      .actuator { fill: #fef2f2; stroke: #b84242; stroke-width: 2.5; }
+      .esp { fill: #edf7ee; stroke: #20885b; stroke-width: 3; }
+      .mqtt { fill: #eef4ff; stroke: #1f6fd6; stroke-width: 3; }
+      .label { font-family: Arial, Helvetica, sans-serif; fill: #172033; font-size: 22px; font-weight: 700; }
+      .small { font-family: Arial, Helvetica, sans-serif; fill: #334155; font-size: 16px; }
+      .tiny { font-family: Arial, Helvetica, sans-serif; fill: #475569; font-size: 14px; }
+      .title { font-family: Arial, Helvetica, sans-serif; fill: #172033; font-size: 34px; font-weight: 700; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; fill: #5a6478; font-size: 18px; }
+      .pin { font-family: Consolas, "Courier New", monospace; fill: #0f172a; font-size: 15px; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1400" height="900"/>
+  <text class="title" x="50" y="56">Schema vizuala - Instalatia Sanitara</text>
+  <text class="subtitle" x="50" y="84">Flux hidraulic, senzori, actuatori, ESP32/OLED, MQTT si alimentari</text>
+
+  <rect class="panel" x="40" y="110" width="1320" height="575" rx="14"/>
+
+  <!-- Rezervoare -->
+  <g id="tank-r1">
+    <text class="label" x="130" y="158">R1 - rezervor sus</text>
+    <rect class="tank" x="95" y="180" width="250" height="330" rx="18"/>
+    <rect class="water" x="113" y="285" width="214" height="205" rx="10"/>
+    <line x1="113" y1="285" x2="327" y2="285" stroke="#2460a8" stroke-width="3" stroke-dasharray="8 6"/>
+    <text class="small" x="128" y="312">nivel calculat</text>
+    <text class="small" x="128" y="337">din distanta</text>
+    <rect class="sensor" x="115" y="198" width="96" height="42" rx="8"/>
+    <text class="tiny" x="125" y="224">JSN R1</text>
+    <text class="pin" x="115" y="255">TRIG 18 / ECHO 19</text>
+    <circle cx="300" cy="300" r="18" fill="#fff7ed" stroke="#c26a12" stroke-width="3"/>
+    <line x1="300" y1="318" x2="300" y2="380" stroke="#c26a12" stroke-width="3"/>
+    <text class="tiny" x="240" y="410">plutitor R1</text>
+    <text class="pin" x="252" y="432">GPIO 32</text>
+  </g>
+
+  <g id="tank-r2">
+    <text class="label" x="995" y="158">R2 - rezervor jos</text>
+    <rect class="tank" x="965" y="245" width="250" height="330" rx="18"/>
+    <rect class="water" x="983" y="415" width="214" height="140" rx="10"/>
+    <line x1="983" y1="415" x2="1197" y2="415" stroke="#2460a8" stroke-width="3" stroke-dasharray="8 6"/>
+    <text class="small" x="998" y="442">nivel calculat</text>
+    <text class="small" x="998" y="467">din distanta</text>
+    <rect class="sensor" x="985" y="263" width="96" height="42" rx="8"/>
+    <text class="tiny" x="995" y="289">JSN R2</text>
+    <text class="pin" x="985" y="320">TRIG 21 / ECHO 22</text>
+    <circle cx="1170" cy="430" r="18" fill="#fff7ed" stroke="#c26a12" stroke-width="3"/>
+    <line x1="1170" y1="448" x2="1170" y2="510" stroke="#c26a12" stroke-width="3"/>
+    <text class="tiny" x="1110" y="540">plutitor R2</text>
+    <text class="pin" x="1122" y="562">GPIO 33</text>
+  </g>
+
+  <!-- Linia 1 -->
+  <path class="pipe" d="M345 330 H500"/>
+  <rect class="device" x="505" y="292" width="145" height="76" rx="10"/>
+  <text class="label" x="522" y="322">Debitmetru</text>
+  <text class="pin" x="526" y="350">FLOW GPIO 27</text>
+  <path class="pipe" d="M650 330 H760"/>
+  <rect class="actuator" x="765" y="292" width="130" height="76" rx="10"/>
+  <text class="label" x="793" y="322">Valva</text>
+  <text class="small" x="790" y="346">12V NC</text>
+  <text class="pin" x="775" y="366">GPIO 25</text>
+  <path class="pipe" d="M895 330 H965"/>
+  <text class="small" x="462" y="272">Linia 1: R1 -> debitmetru -> valva -> R2</text>
+
+  <!-- Linia 2 -->
+  <path class="pipeBi" d="M345 465 C510 620, 780 620, 965 510"/>
+  <path d="M965 545 C780 665, 510 665, 345 500" fill="none" stroke="#20885b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
+  <rect class="device" x="602" y="590" width="195" height="82" rx="12"/>
+  <text class="label" x="646" y="622">Pompa</text>
+  <text class="small" x="620" y="648">bidirectionala</text>
+  <text class="pin" x="614" y="668">A GPIO 26 / B GPIO 14</text>
+  <text class="small" x="472" y="570">Linia 2: R1 &lt;-&gt; pompa &lt;-&gt; R2</text>
+
+  <!-- Controler -->
+  <rect class="esp" x="520" y="125" width="360" height="125" rx="16"/>
+  <text class="label" x="604" y="162">ESP32 + OLED</text>
+  <text class="small" x="555" y="192">afiseaza niveluri, valva, pompa, debit</text>
+  <text class="pin" x="573" y="220">OLED SDA 4 / SCL 15 / RST 16</text>
+
+  <line class="control" x1="610" y1="250" x2="170" y2="218"/>
+  <line class="control" x1="665" y1="250" x2="1035" y2="283"/>
+  <line class="control" x1="700" y1="250" x2="575" y2="292"/>
+  <line class="control" x1="742" y1="250" x2="830" y2="292"/>
+  <line class="control" x1="725" y1="250" x2="700" y2="590"/>
+  <line class="control" x1="580" y1="250" x2="300" y2="300"/>
+  <line class="control" x1="820" y1="250" x2="1170" y2="430"/>
+  <text class="tiny" x="535" y="278">semnale GPIO</text>
+
+  <!-- MQTT -->
+  <rect class="mqtt" x="980" y="110" width="280" height="110" rx="14"/>
+  <text class="label" x="1052" y="148">MQTT</text>
+  <text class="small" x="1008" y="176">Broker 192.168.4.1:1883</text>
+  <text class="tiny" x="1008" y="200">COMANDA / STATUS</text>
+  <path d="M880 170 H980" fill="none" stroke="#1f6fd6" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+  <path d="M980 205 H880" fill="none" stroke="#1f6fd6" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+  <text class="tiny" x="900" y="158">WiFi</text>
+
+  <!-- Alimentari -->
+  <rect class="panel" x="40" y="710" width="1320" height="150" rx="14"/>
+  <text class="label" x="70" y="750">Alimentari si masa comuna</text>
+
+  <rect class="device" x="70" y="775" width="205" height="52" rx="10"/>
+  <text class="small" x="92" y="807">Sursa ESP32 / senzori</text>
+  <path class="ground" d="M275 802 H500"/>
+  <text class="tiny" x="325" y="792">GND comun</text>
+
+  <rect class="actuator" x="530" y="775" width="180" height="52" rx="10"/>
+  <text class="small" x="565" y="797">Sursa 12V</text>
+  <text class="tiny" x="552" y="817">valva prin driver</text>
+  <path class="power12" d="M710 802 H850"/>
+  <text class="tiny" x="746" y="792">12V</text>
+
+  <rect class="sensor" x="875" y="775" width="180" height="52" rx="10"/>
+  <text class="small" x="914" y="797">Sursa pompa</text>
+  <text class="tiny" x="915" y="817">prin driver</text>
+  <path class="power6" d="M1055 802 H1195"/>
+  <text class="tiny" x="1090" y="792">6V sau conform pompei</text>
+
+  <rect x="1210" y="762" width="120" height="76" rx="10" fill="#fff4e6" stroke="#c26a12" stroke-width="2.5"/>
+  <text class="tiny" x="1224" y="787">Nu alimenta</text>
+  <text class="tiny" x="1224" y="807">valva/pompa</text>
+  <text class="tiny" x="1224" y="827">din GPIO ESP32</text>
+
+  <!-- Legenda -->
+  <rect class="panel" x="1010" y="615" width="310" height="58" rx="10"/>
+  <line x1="1030" y1="635" x2="1085" y2="635" stroke="#1f6fd6" stroke-width="7" marker-end="url(#arrowBlue)"/>
+  <text class="tiny" x="1098" y="641">flux apa linia 1</text>
+  <line x1="1030" y1="657" x2="1085" y2="657" stroke="#20885b" stroke-width="7" marker-end="url(#arrowGreen)"/>
+  <text class="tiny" x="1098" y="663">pompa bidirectionala</text>
+</svg>

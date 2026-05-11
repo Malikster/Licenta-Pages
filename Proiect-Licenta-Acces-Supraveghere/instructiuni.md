@@ -7,6 +7,8 @@ Poti alege una dintre cele doua placi:
 - `ESP32-S3-N16R8 IoT ESP-CAM Dev Board`
 - `FireBeetle 2 ESP32-P4 Development Board + IO Expansion Board`
 
+Pentru schema hardware detaliata si alimentari, vezi si `docs/hardware.html`.
+
 ## 1. Ce se pastreaza identic pe ambele variante
 
 Pe ambele placi, proiectul foloseste:
@@ -61,6 +63,8 @@ Recomandat:
 ## 4. Alimentare
 
 Schema de alimentare este aceeasi pe ambele placi:
+
+Pentru tabelele complete de conexiuni si checklist-ul electric, foloseste pagina `docs/hardware.html`.
 
 ```text
 Sursa 12V

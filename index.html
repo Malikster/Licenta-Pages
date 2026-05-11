@@ -14,6 +14,9 @@
       --line: #dce2ee;
       --accent: #1769aa;
       --accent-dark: #0f4d7d;
+      --green: #1f7a55;
+      --red: #a53d3d;
+      --amber: #9a6514;
       --soft: #e9f3fb;
     }
 
@@ -36,7 +39,7 @@
 
     main,
     .header-inner {
-      width: min(1080px, calc(100% - 32px));
+      width: min(1120px, calc(100% - 32px));
       margin: 0 auto;
     }
 
@@ -52,7 +55,7 @@
 
     .lead {
       margin: 0;
-      max-width: 760px;
+      max-width: 790px;
       color: var(--muted);
       font-size: 1.05rem;
     }
@@ -68,7 +71,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
     }
 
@@ -77,7 +80,7 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 18px;
-      min-height: 188px;
+      min-height: 214px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -118,6 +121,18 @@
       background: var(--accent-dark);
     }
 
+    a.button.green {
+      background: var(--green);
+    }
+
+    a.button.red {
+      background: var(--red);
+    }
+
+    a.button.amber {
+      background: var(--amber);
+    }
+
     .note {
       margin-top: 22px;
       padding: 14px 16px;
@@ -149,7 +164,7 @@
     <section class="grid" aria-label="Link-uri documentatie">
       <article class="card">
         <h2>Proiect-Licenta-CPU-Principal</h2>
-        <p>Documentatie pentru Raspberry Pi, Access Point, broker MQTT, serviciul de orchestrare si aplicatia de ecran.</p>
+        <p>Raspberry Pi, Access Point, broker MQTT, serviciul de orchestrare si aplicatia pentru ecranul tactil.</p>
         <div class="links">
           <a class="button" href="Proiect-Licenta-CPU-Principal/index.html">Prezentare</a>
           <a class="button" href="Proiect-Licenta-CPU-Principal/instructiuni.html">Instructiuni</a>
@@ -157,25 +172,48 @@
       </article>
 
       <article class="card">
-        <h2>Proiect-Licenta-Iluminat</h2>
-        <p>Instructiuni pentru modulul de iluminat cu ESP12F si 8 relee, conectat la reteaua si brokerul CPU Principal.</p>
+        <h2>Proiect-Licenta-Aplicatie-Telefon</h2>
+        <p>Aplicatia Android pentru controlul subsistemelor prin MQTT si monitorizarea accesului, iluminatului si instalatiei sanitare.</p>
         <div class="links">
+          <a class="button" href="Proiect-Licenta-Aplicatie-Telefon/instructiuni.html">Instructiuni</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Proiect-Licenta-Iluminat</h2>
+        <p>Modulul de iluminat cu ESP12F si 8 relee, conectat la reteaua locala si la brokerul MQTT al CPU Principal.</p>
+        <div class="links">
+          <a class="button" href="Proiect-Licenta-Iluminat/index.html">Prezentare</a>
           <a class="button" href="Proiect-Licenta-Iluminat/instructiuni.html">Instructiuni</a>
+          <a class="button amber" href="Proiect-Licenta-Iluminat/schema-hardware.html">Schema hardware</a>
         </div>
       </article>
 
       <article class="card">
         <h2>Proiect-Licenta-Acces-Supraveghere</h2>
-        <p>Instructiuni pentru subsistemul de acces, supraveghere, camera, control garaj si control poarta.</p>
+        <p>Subsistemul pentru acces, supraveghere, camera, control garaj si control poarta pe ESP32-S3/ESP32-P4.</p>
         <div class="links">
+          <a class="button" href="Proiect-Licenta-Acces-Supraveghere/index.html">Prezentare</a>
           <a class="button" href="Proiect-Licenta-Acces-Supraveghere/instructiuni.html">Instructiuni</a>
+          <a class="button red" href="Proiect-Licenta-Acces-Supraveghere/hardware.html">Hardware</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Proiect-Licenta-Instalatia-Sanitara</h2>
+        <p>Instalatie sanitara cu doua rezervoare, senzori de nivel, debitmetru, valva, pompa bidirectionala si MQTT.</p>
+        <div class="links">
+          <a class="button" href="Proiect-Licenta-Instalatia-Sanitara/instructiuni.html">Instructiuni</a>
+          <a class="button red" href="Proiect-Licenta-Instalatia-Sanitara/hardware.html">Hardware</a>
+          <a class="button green" href="Proiect-Licenta-Instalatia-Sanitara/mqtt.html">MQTT</a>
+          <a class="button amber" href="Proiect-Licenta-Instalatia-Sanitara/schema-instalatie.html">Schema instalatie</a>
         </div>
       </article>
     </section>
 
     <p class="note">
-      La momentul agregarii, repo-urile <code>Proiect-Licenta-Aplicatie-Telefon</code> si
-      <code>Proiect-Licenta-Instalatia-Sanitara</code> nu aveau folder <code>docs</code> local, deci nu au fost copiate aici.
+      Documentatia a fost sincronizata din folderele <code>docs</code> ale celor cinci repo-uri de sub-proiect.
+      Link-urile de mai sus duc catre paginile HTML principale disponibile in fiecare folder agregat.
     </p>
   </main>
 </body>

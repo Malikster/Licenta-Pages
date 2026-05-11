@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instructiuni - Aplicatia Android Control Casa</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #20212a;
+      --muted: #5b5d6b;
+      --accent: #4f46e5;
+      --accent-soft: #ecebff;
+      --border: #dddeea;
+      --code: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 20px 24px;
+    }
+
+    header .wrap,
+    main {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    nav {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    main {
+      padding: 24px 20px 48px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code,
+    pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    code {
+      background: #f0f1f7;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+
+    pre {
+      background: var(--code);
+      color: #f9fafb;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f1f7;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: #f6f6ff;
+      padding: 12px 14px;
+      border-radius: 6px;
+      color: var(--muted);
+    }
+
+    footer {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 20px 32px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Instructiuni de folosire</h1>
+      <p class="subtitle">Aplicatia Android Control Casa pentru Acces, Iluminat si Instalatia Sanitara.</p>
+      <nav aria-label="Cuprins">
+        <a href="#scop">Scop</a>
+        <a href="#cerinte">Cerinte</a>
+        <a href="#build">Build debug</a>
+        <a href="#instalare">Instalare</a>
+        <a href="#configurare">Configurare</a>
+        <a href="#mqtt">MQTT</a>
+        <a href="#pagini">Pagini</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="scop">
+      <h2>Scopul aplicatiei</h2>
+      <p>Aplicatia Android este interfata mobila pentru controlul si monitorizarea subsistemelor proiectului de licenta.</p>
+      <ul>
+        <li><strong>Acces:</strong> garaj, poarta si camera de supraveghere.</li>
+        <li><strong>Iluminat:</strong> controlul celor 8 circuite/relee.</li>
+        <li><strong>Instalatia Sanitara:</strong> niveluri, valva, pompa, debit si mod AUTO/MANUAL.</li>
+      </ul>
+      <p>Aplicatia comunica in principal prin MQTT cu brokerul local de pe Raspberry Pi si foloseste HTTP pentru imaginea camerei si fallback-ul de status al subsistemului Acces.</p>
+    </section>
+
+    <section id="cerinte">
+      <h2>Cerinte</h2>
+      <ul>
+        <li>Android Studio instalat.</li>
+        <li>JDK compatibil cu proiectul Android.</li>
+        <li>Android SDK Platform 34 sau compatibil cu proiectul.</li>
+        <li>Telefon Android sau emulator.</li>
+        <li>Telefonul conectat la reteaua Raspberry Pi, de obicei <code>Licenta-RPi-AP</code>.</li>
+        <li>Broker MQTT disponibil in reteaua locala.</li>
+      </ul>
+    </section>
+
+    <section id="build">
+      <h2>Build debug</h2>
+      <p>Din radacina proiectului <code>Proiect-Licenta-Aplicatie-Telefon</code>, ruleaza:</p>
+      <pre><code>.\gradlew.bat assembleDebug</code></pre>
+      <p>APK-ul debug se genereaza in:</p>
+      <pre><code>app/build/outputs/apk/debug/app-debug.apk</code></pre>
+    </section>
+
+    <section id="instalare">
+      <h2>Instalare APK pe telefon</h2>
+      <h3>Prin Android Studio</h3>
+      <ol>
+        <li>Conecteaza telefonul prin USB.</li>
+        <li>Activeaza Developer options si USB debugging pe telefon.</li>
+        <li>Deschide proiectul in Android Studio.</li>
+        <li>Alege dispozitivul din bara de rulare.</li>
+        <li>Ruleaza configuratia <code>app</code>.</li>
+      </ol>
+
+      <h3>Prin ADB</h3>
+      <pre><code>.\gradlew.bat assembleDebug
+adb install -r app\build\outputs\apk\debug\app-debug.apk</code></pre>
+
+      <h3>Prin copiere APK</h3>
+      <ol>
+        <li>Copiaza APK-ul pe telefon.</li>
+        <li>Deschide APK-ul din managerul de fisiere.</li>
+        <li>Permite instalarea din surse necunoscute daca Android solicita acest lucru.</li>
+      </ol>
+    </section>
+
+    <section id="configurare">
+      <h2>Configurare initiala</h2>
+      <p>La prima pornire, deschide setarile aplicatiei folosind butonul cu roata dintata din bara de sus.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Setare</th>
+            <th>Valoare recomandata</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Host MQTT</td>
+            <td><code>tcp://192.168.4.1:1883</code></td>
+          </tr>
+          <tr>
+            <td>User MQTT</td>
+            <td><code>licenta</code></td>
+          </tr>
+          <tr>
+            <td>Parola MQTT</td>
+            <td><code>licenta</code></td>
+          </tr>
+          <tr>
+            <td>URL Acces-Supraveghere</td>
+            <td><code>http://192.168.4.3</code></td>
+          </tr>
+          <tr>
+            <td>Refresh camera</td>
+            <td><code>2000</code> ms sau valoarea dorita</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">Setarea <strong>Debug</strong> este optionala. Cand este activata, aplicatia afiseaza informatii MQTT suplimentare si permite testarea comenzilor Acces fara autentificare biometrica.</p>
+    </section>
+
+    <section id="mqtt">
+      <h2>Topicuri MQTT folosite</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Directie</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>LICENTA/ACCES/GARAJ</code></td>
+            <td>publish</td>
+            <td>Comenzi garaj: <code>inchide</code>, <code>stop</code>, <code>deschide</code></td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/ACCES/POARTA</code></td>
+            <td>publish</td>
+            <td>Comenzi poarta: <code>blocheaza</code>, <code>deblocheaza</code></td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/ACCES/STATUS</code></td>
+            <td>subscribe</td>
+            <td>Status Acces in format JSON</td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/ILUMINAT/COMANDA</code></td>
+            <td>publish</td>
+            <td>Comenzi relee iluminat</td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/ILUMINAT/STATUS</code></td>
+            <td>subscribe</td>
+            <td>Status 8 biti pentru circuitele de iluminat</td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/SANITAR/COMANDA</code></td>
+            <td>publish</td>
+            <td>Comenzi AUTO/MANUAL, valva si pompa</td>
+          </tr>
+          <tr>
+            <td><code>LICENTA/SANITAR/STATUS</code></td>
+            <td>subscribe</td>
+            <td>Status sanitar scurt, niveluri si debit</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Format <code>LICENTA/ACCES/STATUS</code></h3>
+      <p>Payload-ul este JSON compatibil cu endpoint-urile <code>/status</code> si <code>/api/access_status</code>.</p>
+      <ul>
+        <li><code>garageMoving</code></li>
+        <li><code>garageState</code></li>
+        <li><code>garagePositionSteps</code></li>
+        <li><code>garageTargetSteps</code></li>
+        <li><code>gateLocked</code></li>
+        <li><code>camera</code></li>
+        <li><code>mqtt</code></li>
+        <li><code>lastGarageCommand</code>, optional</li>
+        <li><code>lastGateCommand</code>, optional</li>
+        <li><code>source</code>, optional</li>
+      </ul>
+      <pre><code>{
+  "garageMoving": false,
+  "garageState": "closed",
+  "garagePositionSteps": 0,
+  "garageTargetSteps": 0,
+  "gateLocked": true,
+  "camera": true,
+  "mqtt": true,
+  "lastGarageCommand": "inchide",
+  "lastGateCommand": "blocheaza",
+  "source": "CPUPrincipal"
+}</code></pre>
+
+      <h3>Format <code>LICENTA/ILUMINAT/STATUS</code></h3>
+      <p>Payload-ul este un sir de 8 biti, de exemplu:</p>
+      <pre><code>01010101</code></pre>
+
+      <h3>Format <code>LICENTA/SANITAR/STATUS</code></h3>
+      <p>Aplicatia accepta status scurt <code>ABC</code>, niveluri si debit.</p>
+      <pre><code>110
+NIVEL-1-075
+NIVEL-2-040
+DEBIT-001</code></pre>
+      <p><code>DEBIT-000</code> se afiseaza ca <code>0 L/min</code>, iar <code>DEBIT-001</code> ca <code>1 L/min</code>.</p>
+    </section>
+
+    <section id="pagini">
+      <h2>Pagini si utilizare</h2>
+      <h3>Acces</h3>
+      <p>Controleaza garajul, poarta si afiseaza camera. Comenzile garajului sunt <code>Inchide</code>, <code>Stop</code> si <code>Deschide</code>. Poarta se controleaza cu <code>Blocheaza</code> / <code>Deblocheaza</code>.</p>
+      <p>Statusul Acces este actualizat din <code>LICENTA/ACCES/STATUS</code>, iar camera foloseste endpoint-ul <code>/camera.jpg</code> de la URL-ul configurat.</p>
+
+      <h3>Iluminat</h3>
+      <p>Pagina contine 8 butoane, cate unul pentru fiecare circuit. Comenzile sunt trimise prin MQTT, iar starea se actualizeaza din <code>LICENTA/ILUMINAT/STATUS</code>.</p>
+      <p class="note">Pentru recuperarea starii dupa reconectare, CPU Principal ar trebui sa publice <code>LICENTA/ILUMINAT/STATUS</code> ca mesaj retained.</p>
+
+      <h3>Instalatia Sanitara</h3>
+      <p>Pagina afiseaza Nivel 1, Nivel 2, Valva, Pompa si Debit. Include comutator AUTO/MANUAL, control valva si control pompa: <code>Pornire 1</code>, <code>Stop</code>, <code>Pornire 2</code>.</p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Troubleshooting</h2>
+
+      <h3>Lipsa conexiunii MQTT</h3>
+      <ol>
+        <li>Verifica daca telefonul este conectat la <code>Licenta-RPi-AP</code>.</li>
+        <li>Verifica host-ul MQTT: <code>tcp://192.168.4.1:1883</code>.</li>
+        <li>Verifica user/parola MQTT: <code>licenta</code> / <code>licenta</code>.</li>
+        <li>Verifica daca brokerul MQTT ruleaza pe Raspberry Pi.</li>
+        <li>Dezactiveaza temporar datele mobile daca telefonul evita reteaua locala.</li>
+        <li>Apasa reconectare MQTT in aplicatie.</li>
+      </ol>
+
+      <h3>Camera inaccesibila</h3>
+      <ol>
+        <li>Verifica daca telefonul este conectat la <code>Licenta-RPi-AP</code>.</li>
+        <li>Verifica URL Acces-Supraveghere: <code>http://192.168.4.3</code>.</li>
+        <li>Testeaza in browser: <code>http://192.168.4.3/camera.jpg</code>.</li>
+        <li>Verifica daca subsistemul Acces-Supraveghere este pornit.</li>
+      </ol>
+
+      <h3>Telefon neconectat la <code>Licenta-RPi-AP</code></h3>
+      <ol>
+        <li>Deschide setarile Wi-Fi ale telefonului.</li>
+        <li>Conecteaza-te la <code>Licenta-RPi-AP</code>.</li>
+        <li>Daca Android avertizeaza ca reteaua nu are internet, alege sa ramai conectat.</li>
+        <li>Dezactiveaza temporar datele mobile daca este necesar.</li>
+        <li>Revino in aplicatie si apasa reconectare MQTT.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>Documentatie pentru Proiect-Licenta-Aplicatie-Telefon.</p>
+  </footer>
+</body>
+</html>

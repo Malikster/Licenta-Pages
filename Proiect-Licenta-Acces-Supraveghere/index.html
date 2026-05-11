@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proiect Licenta Acces Supraveghere</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f6;
+      --panel: #ffffff;
+      --ink: #162126;
+      --muted: #5d6b75;
+      --line: #d8e0dd;
+      --accent: #245f99;
+      --accent-2: #177a54;
+      --warn: #b43b3b;
+      --code: #eef3f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.58;
+    }
+    main {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+      display: grid;
+      gap: 18px;
+    }
+    header, section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 10px; }
+    h2 { font-size: 1.25rem; margin-bottom: 10px; }
+    h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    p { margin: 8px 0; }
+    ul { margin: 8px 0 8px 22px; }
+    code {
+      background: var(--code);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f3; }
+    .lead { color: var(--muted); font-size: 1.05rem; max-width: 850px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 650;
+    }
+    .button.secondary { background: var(--accent-2); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfcfb; }
+    .card p { color: var(--muted); }
+    .note { padding: 10px 12px; border-left: 4px solid var(--accent); background: #f3f8fd; }
+    .warn { padding: 10px 12px; border-left: 4px solid var(--warn); background: #fdf3f3; }
+    @media (max-width: 860px) {
+      main { padding: 14px 10px 40px; }
+      .grid, .cards { grid-template-columns: 1fr; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Proiect Licenta Acces Supraveghere</h1>
+      <p class="lead">Sistem IoT pentru control acces si supraveghere, cu Raspberry Pi ca infrastructura Wi-Fi/MQTT, camera OV5640, control garaj cu stepper prin TMC2209 si blocare poarta cu micro servo.</p>
+      <div class="actions">
+        <a class="button" href="instructiuni.html">Deschide instructiunile</a>
+        <a class="button secondary" href="hardware.html">Schema hardware</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>Scopul proiectului</h2>
+      <p>Proiectul unifica accesul fizic si supravegherea video intr-un firmware pentru placi ESP32. Comenzile vin prin MQTT de pe Raspberry Pi, iar utilizatorul poate controla garajul si poarta dintr-o interfata web locala.</p>
+      <div class="note">
+        Documentatia pas cu pas este in <a href="instructiuni.html">docs/instructiuni.html</a>.
+      </div>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>Functionalitati</h2>
+        <ul>
+          <li>Conectare la reteaua Wi-Fi creata de Raspberry Pi.</li>
+          <li>Comenzi MQTT pentru garaj si poarta.</li>
+          <li>Status JSON retained pe <code>LICENTA/ACCES/STATUS</code>.</li>
+          <li>Interfata web pentru control local.</li>
+          <li>Camera <code>OV5640</code> pentru supraveghere.</li>
+          <li>Configuratie pe card <code>microSD</code> / <code>TF</code>.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Componente</h2>
+        <ul>
+          <li><code>ESP32-S3-N16R8 ESP-CAM</code> sau <code>FireBeetle 2 ESP32-P4 + IO Expansion</code></li>
+          <li>Camera <code>OV5640</code></li>
+          <li>Driver stepper <code>TMC2209</code></li>
+          <li>Motor <code>Bondtech NEMA17 Pancake Stepper 22mm</code></li>
+          <li>Micro servo <code>9g</code></li>
+          <li>Raspberry Pi pentru Wi-Fi si MQTT</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Variante de placa</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Varianta</th>
+            <th>Firmware recomandat</th>
+            <th>Camera</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ESP32-S3-N16R8 ESP-CAM</code></td>
+            <td>Sketch Arduino <code>licenta-acces-supraveghere.ino</code></td>
+            <td><code>OV5640</code> in Arduino</td>
+          </tr>
+          <tr>
+            <td><code>FireBeetle 2 ESP32-P4 + IO Expansion</code></td>
+            <td>Subproiect ESP-IDF <code>esp32-p4-ov5640-video-server</code></td>
+            <td><code>OV5640</code> prin aplicatia ESP-IDF</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Topicuri MQTT</h2>
+      <div class="cards">
+        <div class="card">
+          <h3><code>LICENTA/ACCES/GARAJ</code></h3>
+          <p>Payload-uri: <code>deschide</code>, <code>stop</code>, <code>inchide</code>.</p>
+        </div>
+        <div class="card">
+          <h3><code>LICENTA/ACCES/POARTA</code></h3>
+          <p>Payload-uri: <code>blocheaza</code>, <code>deblocheaza</code>.</p>
+        </div>
+        <div class="card">
+          <h3><code>LICENTA/ACCES/STATUS</code></h3>
+          <p>Status JSON retained publicat la conectare, dupa comenzi si la finalul miscarii garajului.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Unde continui</h2>
+      <p>Pentru cablare, setari Arduino IDE, ESP-IDF, configurarea cardului si testare MQTT, foloseste ghidul complet.</p>
+      <div class="actions">
+        <a class="button" href="instructiuni.html">Mergi la instructiuni</a>
+        <a class="button secondary" href="hardware.html">Schema hardware si alimentari</a>
+        <a class="button secondary" href="arhitectura-firebeetle-p4.md">Arhitectura FireBeetle P4</a>
+      </div>
+      <div class="warn">
+        Pentru varianta <code>ESP32-P4</code> cu camera si control in acelasi firmware, foloseste subproiectul ESP-IDF, nu sketch-ul Arduino de test actuatori.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

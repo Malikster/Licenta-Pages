@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schema hardware si alimentari</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f6;
+      --panel: #ffffff;
+      --ink: #162126;
+      --muted: #5d6b75;
+      --line: #d8e0dd;
+      --accent: #245f99;
+      --accent-2: #177a54;
+      --warn: #b43b3b;
+      --code: #eef3f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.58;
+    }
+    main {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+      display: grid;
+      gap: 18px;
+    }
+    header, section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 10px; }
+    h2 { font-size: 1.25rem; margin-bottom: 10px; }
+    h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 22px; }
+    code {
+      background: var(--code);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+    pre {
+      margin: 12px 0;
+      padding: 14px;
+      background: var(--code);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: auto;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f3; }
+    .lead { color: var(--muted); font-size: 1.05rem; max-width: 880px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 650;
+    }
+    .button.secondary { background: var(--accent-2); }
+    .note, .ok, .warn {
+      padding: 10px 12px;
+      border-left: 4px solid var(--accent);
+      background: #f3f8fd;
+      margin-top: 12px;
+    }
+    .ok { border-left-color: var(--accent-2); background: #eff9f4; }
+    .warn { border-left-color: var(--warn); background: #fdf3f3; }
+    @media (max-width: 860px) {
+      main { padding: 14px 10px 40px; }
+      .grid { grid-template-columns: 1fr; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Schema hardware si alimentari</h1>
+      <p class="lead">Conexiuni recomandate pentru ESP32-S3 sau FireBeetle 2 ESP32-P4, driver TMC2209, motor Bondtech NEMA17 Pancake 22mm, micro servo, camera OV5640 si alimentarea comuna.</p>
+      <div class="actions">
+        <a class="button" href="instructiuni.html">Instructiuni complete</a>
+        <a class="button secondary" href="index.html">Prezentare proiect</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>Schema generala de alimentare</h2>
+      <pre><code>Sursa principala 12V
+  +--> VMOT TMC2209
+  +--> intrare buck 9-35V -> 5V
+
+Buck 5V
+  +--> 5V / VIN placa ESP32
+  +--> +5V servo
+
+ESP32 3.3V
+  +--> VIO / VDD logic TMC2209, daca modulul are acest pin
+
+GND comun
+  sursa 12V
+  buck
+  ESP32
+  TMC2209
+  servo</code></pre>
+      <div class="warn">
+        Nu alimenta stepper-ul din 5V, nu alimenta servo-ul din 3.3V si nu conecta VMOT direct la placa ESP32.
+      </div>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>Recomandari electrice</h2>
+        <ul>
+          <li>Regleaza buck-ul la <code>5V</code> inainte sa conectezi ESP32 si servo.</li>
+          <li>Leaga toate masele impreuna: sursa, buck, ESP32, TMC2209 si servo.</li>
+          <li>Pune un condensator <code>100uF - 470uF</code> aproape de <code>VMOT/GND</code> pe TMC2209.</li>
+          <li>Pune un condensator <code>470uF - 1000uF</code> pe linia de <code>5V</code> daca servo-ul reseteaza placa.</li>
+          <li>Foloseste radiator pe TMC2209 si verifica temperatura dupa primele teste.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ordine de testare</h2>
+        <ol>
+          <li>Testeaza ESP32 singur, alimentat din USB sau 5V stabil.</li>
+          <li>Testeaza servo-ul fara mecanica montata.</li>
+          <li>Testeaza TMC2209 fara motor sau cu motorul liber, fara sarcina.</li>
+          <li>Monteaza mecanica doar dupa ce directia si capetele de cursa sunt clare.</li>
+        </ol>
+        <div class="note">
+          Pentru primele teste la motorul Bondtech NEMA17 Pancake 22mm, porneste conservator cu aproximativ <code>0.6A - 0.8A RMS</code> pe TMC2209.
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Conexiuni comune TMC2209</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pin / functie TMC2209</th>
+            <th>Conectare</th>
+            <th>Observatii</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>VMOT</code></td>
+            <td><code>+12V</code> din sursa motorului</td>
+            <td>Nu se leaga la 5V ESP32.</td>
+          </tr>
+          <tr>
+            <td><code>GND</code> motor</td>
+            <td>GND sursa 12V si GND comun</td>
+            <td>Necesar pentru referinta comuna.</td>
+          </tr>
+          <tr>
+            <td><code>VIO</code> / <code>VDD</code>, daca exista</td>
+            <td><code>3.3V</code> ESP32</td>
+            <td>Alimenteaza logica driverului la nivel compatibil cu ESP32.</td>
+          </tr>
+          <tr>
+            <td><code>STEP</code>, <code>DIR</code>, <code>EN/ENN</code></td>
+            <td>Pinii ESP32 din tabelul placii folosite</td>
+            <td><code>EN/ENN</code> este activ LOW pe majoritatea modulelor TMC2209.</td>
+          </tr>
+          <tr>
+            <td><code>A1/A2</code> si <code>B1/B2</code></td>
+            <td>Cele doua bobine ale motorului stepper</td>
+            <td>Identifica perechile de bobine cu multimetrul inainte de alimentare.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="warn">
+        Nu conecta sau deconecta motorul stepper cat timp TMC2209 este alimentat.
+      </div>
+    </section>
+
+    <section>
+      <h2>ESP32-S3-N16R8 ESP-CAM</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Functie</th>
+            <th>Pin ESP32-S3</th>
+            <th>Conectare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TMC2209 <code>STEP</code></td>
+            <td><code>GPIO1</code></td>
+            <td><code>STEP</code> driver</td>
+          </tr>
+          <tr>
+            <td>TMC2209 <code>DIR</code></td>
+            <td><code>GPIO14</code></td>
+            <td><code>DIR</code> driver</td>
+          </tr>
+          <tr>
+            <td>TMC2209 <code>EN/ENN</code></td>
+            <td><code>GPIO21</code></td>
+            <td><code>EN</code> / <code>ENN</code> driver</td>
+          </tr>
+          <tr>
+            <td>Servo semnal</td>
+            <td><code>GPIO42</code></td>
+            <td>Fir semnal servo</td>
+          </tr>
+          <tr>
+            <td>microSD onboard</td>
+            <td><code>CLK=39</code>, <code>CMD=38</code>, <code>D0=40</code></td>
+            <td>Nu necesita cablare externa.</td>
+          </tr>
+          <tr>
+            <td>Camera <code>OV5640</code></td>
+            <td>Mapping definit in sketch</td>
+            <td>Camera este pe conectorul placii.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>FireBeetle 2 ESP32-P4 + IO Expansion</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Functie</th>
+            <th>Pin ESP32-P4</th>
+            <th>Pin expansion</th>
+            <th>Conectare</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TMC2209 <code>STEP</code></td>
+            <td><code>GPIO20</code></td>
+            <td><code>A0</code></td>
+            <td><code>STEP</code> driver</td>
+          </tr>
+          <tr>
+            <td>TMC2209 <code>DIR</code></td>
+            <td><code>GPIO21</code></td>
+            <td><code>A1</code></td>
+            <td><code>DIR</code> driver</td>
+          </tr>
+          <tr>
+            <td>TMC2209 <code>EN/ENN</code></td>
+            <td><code>GPIO22</code></td>
+            <td><code>A2</code></td>
+            <td><code>EN</code> / <code>ENN</code> driver</td>
+          </tr>
+          <tr>
+            <td>Servo semnal</td>
+            <td><code>GPIO23</code></td>
+            <td><code>A3</code></td>
+            <td>Fir semnal servo</td>
+          </tr>
+          <tr>
+            <td>TF card onboard</td>
+            <td><code>D0=39</code>, <code>D1=40</code>, <code>D2=41</code>, <code>D3=42</code>, <code>CLK=43</code>, <code>CMD=44</code>, <code>EN=45</code></td>
+            <td>onboard</td>
+            <td>Rezervat pentru card, nu folosi pentru actuatori.</td>
+          </tr>
+          <tr>
+            <td>Camera <code>OV5640</code></td>
+            <td>MIPI-CSI, <code>SDA=7</code>, <code>SCL=8</code></td>
+            <td>conector camera</td>
+            <td>Folosita de subproiectul ESP-IDF.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        Pe P4 se evita pentru actuatori <code>GPIO7/GPIO8</code>, <code>GPIO39-45</code>, <code>GPIO14-19</code>, <code>GPIO54</code>, <code>GPIO6</code> si <code>GPIO35</code>.
+      </div>
+    </section>
+
+    <section>
+      <h2>Servo 9g</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fir servo</th>
+            <th>Conectare</th>
+            <th>Observatii</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Semnal</td>
+            <td><code>GPIO42</code> pe ESP32-S3 sau <code>GPIO23/A3</code> pe ESP32-P4</td>
+            <td>Optional, poti pune o rezistenta serie mica pe semnal.</td>
+          </tr>
+          <tr>
+            <td><code>+5V</code></td>
+            <td>Iesirea buck 5V</td>
+            <td>Nu alimenta servo-ul din pinul 3.3V.</td>
+          </tr>
+          <tr>
+            <td><code>GND</code></td>
+            <td>GND comun</td>
+            <td>Trebuie sa fie comun cu GND ESP32.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Checklist inainte de alimentare</h2>
+      <ul>
+        <li>Buck-ul este masurat la <code>5V</code> cu multimetrul.</li>
+        <li>GND este comun intre toate modulele.</li>
+        <li>TMC2209 are radiator si curent setat conservator.</li>
+        <li>Bobinele motorului sunt identificate corect.</li>
+        <li>Servo-ul este alimentat din 5V, nu din 3.3V.</li>
+        <li>Pinii P4 rezervati pentru camera, TF card si ESP32-C6 nu sunt folositi pentru actuatori.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instructiuni Firmware - Instalatia Sanitara</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5a6478;
+      --accent: #1266d6;
+      --border: #d9e0ec;
+      --code: #eef3fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    h2 {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 24px;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    p, li {
+      color: var(--text);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    code {
+      background: var(--code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    pre {
+      background: var(--code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4ff;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .note {
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eaf2ff;
+      color: #0f4ea9;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Firmware Instalatia Sanitara</h1>
+      <p class="lead">
+        Documentatie de folosire pentru firmware-ul ESP32 care gestioneaza doua rezervoare, senzori de nivel,
+        debitmetru, valva, pompa bidirectionala, afisaj OLED si integrare MQTT.
+      </p>
+      <p>
+        Resurse asociate:
+        <a href="../index.html">prezentare proiect</a>,
+        <a href="mqtt.html">schema MQTT si AUTO/MANUAL</a>,
+        <a href="hardware.html">schema hardware si alimentari</a>,
+        <a href="schema-instalatie.html">schema vizuala</a>
+      </p>
+      <div>
+        <span class="tag">ESP32 + OLED</span>
+        <span class="tag">JSN-SR04T</span>
+        <span class="tag">MQTT</span>
+        <span class="tag">Auto / Manual</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Scopul proiectului</h2>
+      <div class="panel">
+        <p>Proiectul controleaza o instalatie sanitara experimentala cu doua rezervoare, denumite <code>R1</code> si <code>R2</code>.</p>
+        <ul>
+          <li>Linia 1: <code>R1 -&gt; debitmetru -&gt; valva -&gt; R2</code></li>
+          <li>Linia 2: <code>R1 &lt;-&gt; pompa &lt;-&gt; R2</code></li>
+        </ul>
+        <p>Firmware-ul masoara nivelurile, citeste debitul, comanda actuatorii, afiseaza local starea pe OLED si comunica prin MQTT.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Componente hardware necesare</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Control</h3>
+          <ul>
+            <li>ESP32 Development Board cu OLED 0.96 inch</li>
+            <li>cablu USB pentru programare</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Senzori</h3>
+          <ul>
+            <li>2 x JSN-SR04T</li>
+            <li>2 x plutitor</li>
+            <li>1 x debitmetru</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Actuatori</h3>
+          <ul>
+            <li>1 x valva electromagnetica 12V NC</li>
+            <li>1 x pompa bidirectionala</li>
+            <li>driver valva</li>
+            <li>driver pompa cu inversare sens</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Alimentare</h3>
+          <ul>
+            <li>alimentare ESP32</li>
+            <li>alimentare separata pentru valva si pompa</li>
+            <li>masa comuna</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cablare pe baza <code>pins.h</code></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Semnal</th>
+            <th>Pin</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>OLED_SDA</code></td><td><code>4</code></td><td>Date I2C OLED</td></tr>
+          <tr><td><code>OLED_SCL</code></td><td><code>15</code></td><td>Ceas I2C OLED</td></tr>
+          <tr><td><code>OLED_RST</code></td><td><code>16</code></td><td>Reset OLED</td></tr>
+          <tr><td><code>FLOW_SENSOR</code></td><td><code>27</code></td><td>Intrare debitmetru</td></tr>
+          <tr><td><code>R1_TRIG</code></td><td><code>18</code></td><td>Trigger JSN-SR04T pentru R1</td></tr>
+          <tr><td><code>R1_ECHO</code></td><td><code>19</code></td><td>Echo JSN-SR04T pentru R1</td></tr>
+          <tr><td><code>R2_TRIG</code></td><td><code>21</code></td><td>Trigger JSN-SR04T pentru R2</td></tr>
+          <tr><td><code>R2_ECHO</code></td><td><code>22</code></td><td>Echo JSN-SR04T pentru R2</td></tr>
+          <tr><td><code>R1_FLOAT</code></td><td><code>32</code></td><td>Plutitor rezervor R1</td></tr>
+          <tr><td><code>R2_FLOAT</code></td><td><code>33</code></td><td>Plutitor rezervor R2</td></tr>
+          <tr><td><code>VALVE_CTRL</code></td><td><code>25</code></td><td>Comanda driver valva</td></tr>
+          <tr><td><code>PUMP_DIR_A</code></td><td><code>26</code></td><td>Comanda pompa R1 -&gt; R2</td></tr>
+          <tr><td><code>PUMP_DIR_B</code></td><td><code>14</code></td><td>Comanda pompa R2 -&gt; R1</td></tr>
+        </tbody>
+      </table>
+
+      <div class="panel">
+        <h3>Observatii pentru JSN-SR04T</h3>
+        <ul>
+          <li><code>ECHO</code> trebuie coborat la 3.3V pentru ESP32 daca modulul este alimentat la 5V.</li>
+          <li>Exemplu divizor: 1k intre <code>ECHO</code> si ESP32, 2k intre ESP32 si <code>GND</code>.</li>
+          <li>Senzorul trebuie montat vertical si ferit de zone moarte aproape de nivelul maxim.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Configurare <code>config.h</code></h2>
+      <div class="panel">
+        <p>Fisierul contine setarile de retea, MQTT, timpii de refresh, filtrarea pentru JSN-SR04T, calibrarea debitmetrului si pragurile pentru modul AUTO.</p>
+        <h3>Valori recomandate de retea</h3>
+        <ul>
+          <li>WiFi SSID: <code>Licenta-RPi-AP</code></li>
+          <li>WiFi password: <code>licenta-rpi</code></li>
+          <li>MQTT host: <code>192.168.4.1</code></li>
+          <li>MQTT port: <code>1883</code></li>
+          <li>client ID: <code>licenta-sanitar-esp32</code></li>
+        </ul>
+        <pre><code>constexpr char WIFI_SSID[] = "Licenta-RPi-AP";
+constexpr char WIFI_PASSWORD[] = "licenta-rpi";
+constexpr char MQTT_HOST[] = "192.168.4.1";
+constexpr uint16_t MQTT_PORT = 1883;
+constexpr char MQTT_CLIENT_ID[] = "licenta-sanitar-esp32";</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Biblioteci Arduino necesare</h2>
+      <div class="panel">
+        <ul>
+          <li><code>PubSubClient</code></li>
+          <li><code>Adafruit GFX Library</code></li>
+          <li><code>Adafruit SSD1306</code></li>
+        </ul>
+        <p class="note">Este necesar si suportul de placi ESP32 in Arduino IDE.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Compilare si upload in Arduino IDE</h2>
+      <div class="panel">
+        <ol>
+          <li>Deschide <code>Proiect-Licenta-Instalatia-Sanitara.ino</code> in Arduino IDE.</li>
+          <li>Instaleaza bibliotecile necesare.</li>
+          <li>Selecteaza board-ul <code>ESP32 Dev Module</code> sau modelul real al placii.</li>
+          <li>Selecteaza portul serial corect.</li>
+          <li>Actualizeaza <code>config.h</code> daca este necesar.</li>
+          <li>Apasa <code>Verify</code>.</li>
+          <li>Apasa <code>Upload</code>.</li>
+          <li>Deschide <code>Serial Monitor</code> la <code>115200</code> baud.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2>Topicuri MQTT</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Comenzi</h3>
+          <p><code>LICENTA/SANITAR/COMANDA</code></p>
+        </div>
+        <div class="card">
+          <h3>Status</h3>
+          <p><code>LICENTA/SANITAR/STATUS</code></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mesaje acceptate</h2>
+      <div class="panel">
+        <ul>
+          <li><code>AUTO-1</code></li>
+          <li><code>AUTO-0</code></li>
+          <li><code>POMPA-A</code></li>
+          <li><code>POMPA-B</code></li>
+          <li><code>POMPA-0</code></li>
+          <li><code>VALVA-1</code></li>
+          <li><code>VALVA-0</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mesaje publicate</h2>
+      <div class="panel">
+        <ul>
+          <li><code>ABC</code> pentru modul, valva si pompa</li>
+          <li><code>NIVEL-1-XYZ</code></li>
+          <li><code>NIVEL-2-XYZ</code></li>
+          <li><code>DEBIT-XYZ</code>, daca debitul este disponibil in firmware</li>
+        </ul>
+        <p><code>DEBIT-XYZ</code> foloseste debitul real in L/min, rotunjit si formatat pe 3 cifre, de exemplu <code>DEBIT-000</code> sau <code>DEBIT-001</code>.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mod AUTO si MANUAL</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>AUTO</h3>
+          <ul>
+            <li>R1 mare -> valva deschisa</li>
+            <li>R1 mic -> valva inchisa</li>
+            <li>R2 mare -> pompa R2 -&gt; R1</li>
+            <li>R2 mic -> pompa oprita</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>MANUAL</h3>
+          <ul>
+            <li>actuatorii sunt controlati din MQTT</li>
+            <li>la intrarea in MANUAL, valva se inchide</li>
+            <li>la intrarea in MANUAL, pompa se opreste</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Troubleshooting</h2>
+      <div class="panel">
+        <h3>MQTT</h3>
+        <ul>
+          <li>verifica SSID, parola si brokerul <code>192.168.4.1:1883</code></li>
+          <li>verifica topicurile exacte</li>
+          <li>foloseste Serial Monitor la <code>115200</code></li>
+        </ul>
+
+        <h3>JSN-SR04T</h3>
+        <ul>
+          <li>protejeaza <code>ECHO</code> catre 3.3V</li>
+          <li>monteaza vertical senzorul</li>
+          <li>ajusteaza pragurile de distanta si filtrarea</li>
+        </ul>
+
+        <h3>OLED</h3>
+        <ul>
+          <li>verifica bibliotecile Adafruit</li>
+          <li>verifica pinii <code>OLED_SDA</code>, <code>OLED_SCL</code>, <code>OLED_RST</code></li>
+          <li>verifica maparea interna a placii cu OLED integrat</li>
+        </ul>
+
+        <h3>Pompa</h3>
+        <ul>
+          <li>driverul trebuie sa permita ambele sensuri</li>
+          <li>conventia trebuie pastrata: <code>POMPA-A = R1 -&gt; R2</code>, <code>POMPA-B = R2 -&gt; R1</code></li>
+          <li>daca directiile sunt inversate fizic, corecteaza cablarea sau driverul</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

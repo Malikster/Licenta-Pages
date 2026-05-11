@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schema Hardware - Instalatia Sanitara</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5a6478;
+      --accent: #1367d6;
+      --border: #d8e0eb;
+      --soft: #eef4ff;
+      --warn: #fff4e6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    h2 {
+      margin-top: 28px;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 820px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code {
+      background: #eef3fb;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .warning {
+      background: var(--warn);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Schema Hardware si Alimentari</h1>
+      <p class="lead">
+        Pagina rezuma componentele fizice, maparea pinilor, legarea senzorilor si actuatorilor,
+        precum si recomandarile de alimentare pentru firmware-ul instalatiei sanitare.
+      </p>
+      <p>
+        Resurse asociate:
+        <a href="../index.html">prezentare proiect</a> |
+        <a href="instructiuni.html">instructiuni complete</a> |
+        <a href="mqtt.html">schema MQTT</a> |
+        <a href="schema-instalatie.html">schema vizuala</a>
+      </p>
+    </header>
+
+    <section>
+      <h2>Schema vizuala a instalatiei</h2>
+      <div class="panel">
+        <p>Schema arata fluxul hidraulic, semnalele catre ESP32, topicurile MQTT si alimentarea comuna.</p>
+        <p><a href="schema-instalatie.html">Deschide schema pe pagina dedicata</a></p>
+        <img src="schema-instalatie.svg" alt="Schema vizuala a instalatiei sanitare" style="width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#ffffff;">
+      </div>
+    </section>
+
+    <section>
+      <h2>Blocuri hardware</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Control</h3>
+          <ul>
+            <li>ESP32 Development Board cu OLED integrat</li>
+            <li>conectivitate WiFi</li>
+            <li>afisaj local OLED</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Senzori</h3>
+          <ul>
+            <li>2 x JSN-SR04T</li>
+            <li>2 x plutitor</li>
+            <li>1 x debitmetru</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Actuatori</h3>
+          <ul>
+            <li>1 x valva 12V NC</li>
+            <li>1 x pompa bidirectionala</li>
+            <li>driver valva</li>
+            <li>driver pompa</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Instalatie</h3>
+          <ul>
+            <li>rezervor R1</li>
+            <li>rezervor R2</li>
+            <li>linia 1: R1 -&gt; debitmetru -&gt; valva -&gt; R2</li>
+            <li>linia 2: R1 &lt;-&gt; pompa &lt;-&gt; R2</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Maparea pinilor</h2>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Pin logic</th>
+              <th>GPIO</th>
+              <th>Utilizare</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>OLED_SDA</code></td><td><code>4</code></td><td>Date I2C pentru OLED</td></tr>
+            <tr><td><code>OLED_SCL</code></td><td><code>15</code></td><td>Ceas I2C pentru OLED</td></tr>
+            <tr><td><code>OLED_RST</code></td><td><code>16</code></td><td>Reset pentru OLED</td></tr>
+            <tr><td><code>FLOW_SENSOR</code></td><td><code>27</code></td><td>Intrare impulsuri debitmetru</td></tr>
+            <tr><td><code>R1_TRIG</code></td><td><code>18</code></td><td>Trigger JSN-SR04T pentru R1</td></tr>
+            <tr><td><code>R1_ECHO</code></td><td><code>19</code></td><td>Echo JSN-SR04T pentru R1</td></tr>
+            <tr><td><code>R2_TRIG</code></td><td><code>21</code></td><td>Trigger JSN-SR04T pentru R2</td></tr>
+            <tr><td><code>R2_ECHO</code></td><td><code>22</code></td><td>Echo JSN-SR04T pentru R2</td></tr>
+            <tr><td><code>R1_FLOAT</code></td><td><code>32</code></td><td>Intrare plutitor R1</td></tr>
+            <tr><td><code>R2_FLOAT</code></td><td><code>33</code></td><td>Intrare plutitor R2</td></tr>
+            <tr><td><code>VALVE_CTRL</code></td><td><code>25</code></td><td>Comanda driver valva</td></tr>
+            <tr><td><code>PUMP_DIR_A</code></td><td><code>26</code></td><td>Comanda pompa R1 -&gt; R2</td></tr>
+            <tr><td><code>PUMP_DIR_B</code></td><td><code>14</code></td><td>Comanda pompa R2 -&gt; R1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Legarea senzorilor</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>JSN-SR04T</h3>
+          <ul>
+            <li><code>VCC</code> la 5V sau tensiunea recomandata</li>
+            <li><code>GND</code> la GND comun</li>
+            <li><code>TRIG</code> la pinul din <code>pins.h</code></li>
+            <li><code>ECHO</code> la pinul din <code>pins.h</code> prin divizor rezistiv sau level shifter</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Plutitori</h3>
+          <ul>
+            <li>fiecare plutitor la pinul sau dedicat</li>
+            <li>intrari configurate <code>INPUT_PULLUP</code></li>
+            <li>semnal activ asteptat la <code>LOW</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Debitmetru</h3>
+          <ul>
+            <li>iesirea de impulsuri la <code>FLOW_SENSOR</code></li>
+            <li>masa comuna cu ESP32</li>
+            <li>calibrare prin <code>FLOW_PULSES_PER_LITER</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Legarea actuatorilor</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Valva</h3>
+          <ul>
+            <li><code>VALVE_CTRL</code> merge doar in driver, nu direct in valva de 12V</li>
+            <li>valva este normal inchisa</li>
+            <li>deschiderea este comandata din firmware prin iesire digitala</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pompa</h3>
+          <ul>
+            <li><code>PUMP_DIR_A</code> si <code>PUMP_DIR_B</code> merg in driverul pompei</li>
+            <li>driverul trebuie sa permita ambele sensuri</li>
+            <li>conventia este:
+              <ul>
+                <li><code>POMPA-A</code> = <code>R1 -&gt; R2</code></li>
+                <li><code>POMPA-B</code> = <code>R2 -&gt; R1</code></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Alimentari recomandate</h2>
+      <div class="panel">
+        <ul>
+          <li>ESP32 sa fie alimentat din sursa sa stabila, conform placii folosite.</li>
+          <li>Valva de 12V sa fie alimentata din sursa separata adecvata consumului ei.</li>
+          <li>Pompa sa fie alimentata din sursa potrivita specificatiilor ei.</li>
+          <li>Toti senzorii si driverele care schimba semnale logice cu ESP32 trebuie sa aiba masa comuna cu ESP32.</li>
+          <li>Nu alimenta valva sau pompa direct din pinurile ESP32.</li>
+        </ul>
+      </div>
+      <div class="panel warning">
+        <h3>Atentie</h3>
+        <ul>
+          <li>Semnalul <code>ECHO</code> de la JSN-SR04T nu trebuie aplicat direct la 5V pe ESP32.</li>
+          <li>Bobinele si motoarele trebuie comandate prin drivere cu protectie adecvata.</li>
+          <li>Verifica directiile fizice ale pompei inainte de testele automate.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

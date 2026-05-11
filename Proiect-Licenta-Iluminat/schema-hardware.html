@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proiect Licenta - Schema hardware si alimentari</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #18202a;
+      --muted: #516173;
+      --border: #d8e0ea;
+      --accent: #1f6feb;
+      --warn: #a15c00;
+      --warn-bg: #fff4db;
+      --code-bg: #f0f4f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin-top: 0;
+      color: #0f1720;
+    }
+
+    h2 {
+      margin-top: 32px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-top: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+
+    .warning {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn);
+      padding: 14px 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    code, pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4fb;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .nav {
+      margin-bottom: 18px;
+    }
+
+    .nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="nav">
+      <a href="./index.html">Inapoi la prezentare</a>
+    </div>
+
+    <h1>Schema hardware si alimentari</h1>
+    <p class="lead">
+      Pagina dedicata conexiunilor hardware pentru programare, alimentarii placii
+      <code>ESP12F_Relay_30A_X8</code> si recomandarilor de siguranta.
+    </p>
+
+    <div class="warning">
+      <strong>Atentie:</strong> nu face programarea sau probele initiale cu sarcini de 230V
+      conectate la relee. Lucreaza intai doar cu alimentarea de control si conexiunile seriale.
+    </div>
+
+    <h2>1. Arhitectura de baza</h2>
+    <div class="panel">
+      <p>
+        Pentru scrierea firmware-ului, legatura recomandata este:
+      </p>
+      <p>
+        <code>PC -> Arduino UNO (USB-Serial) -> ESP12F_Relay_30A_X8</code>
+      </p>
+      <ul>
+        <li>PC-ul ruleaza Arduino IDE si trimite sketch-ul.</li>
+        <li>Arduino UNO este folosit doar ca adaptor USB-Serial.</li>
+        <li>Placa ESP12F_Relay_30A_X8 primeste firmware-ul pe UART.</li>
+      </ul>
+    </div>
+
+    <h2>2. Schema de conexiuni pentru programare</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Arduino UNO</th>
+          <th>ESP12F_Relay_30A_X8</th>
+          <th>Explicatie</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>GND</code></td>
+          <td><code>GND</code></td>
+          <td>Masa comuna intre adaptor si placa ESP</td>
+        </tr>
+        <tr>
+          <td><code>D0 / RX</code></td>
+          <td><code>TX</code></td>
+          <td>Receptie pe UNO din transmisia ESP</td>
+        </tr>
+        <tr>
+          <td><code>D1 / TX</code></td>
+          <td><code>RX</code></td>
+          <td>Transmitere din UNO spre receptia ESP</td>
+        </tr>
+        <tr>
+          <td><code>5V</code></td>
+          <td><code>5V</code></td>
+          <td>Alimentare de control, doar daca placa este alimentata astfel in mod sigur</td>
+        </tr>
+        <tr>
+          <td><code>GND</code></td>
+          <td><code>GPIO0</code></td>
+          <td>Forteaza intrarea in flash mode in timpul upload-ului</td>
+        </tr>
+        <tr>
+          <td><code>RESET -> GND</code></td>
+          <td>-</td>
+          <td>Dezactiveaza ATmega328P de pe UNO pentru a lasa doar USB-Serial-ul activ</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Alimentarea placii</h2>
+    <div class="panel">
+      <h3>Alimentare pentru programare</h3>
+      <ul>
+        <li>Foloseste o alimentare stabila pentru placa de relee.</li>
+        <li>Mentine masa comuna intre UNO si placa ESP.</li>
+        <li>Daca alimentezi din pinul <code>5V</code> al UNO, verifica atent ca placa sa accepte acest mod fara instabilitati.</li>
+      </ul>
+
+      <h3>Alimentare pentru exploatare</h3>
+      <ul>
+        <li>Placa este destinata functionarii cu alimentare separata, conform specificatiilor ei.</li>
+        <li>Evita sa bazezi functionarea normala a modulului pe alimentarea oferita de portul USB al UNO.</li>
+        <li>Conecteaza sarcinile de putere numai dupa ce firmware-ul este incarcat si testele de baza sunt finalizate.</li>
+      </ul>
+    </div>
+
+    <h2>4. Pasi recomandati pentru programare</h2>
+    <div class="panel">
+      <ol>
+        <li>Conecteaza Arduino UNO la PC prin USB.</li>
+        <li>Leaga <code>RESET</code> de pe UNO la <code>GND</code>.</li>
+        <li>Realizeaza conexiunile UART si masa comuna.</li>
+        <li>Leaga <code>GPIO0</code> de pe placa ESP la <code>GND</code>.</li>
+        <li>Alimenteaza placa ESP.</li>
+        <li>Ruleaza upload-ul din Arduino IDE.</li>
+        <li>Dupa finalizare, scoate <code>GPIO0</code> din <code>GND</code> si reporneste placa.</li>
+      </ol>
+    </div>
+
+    <h2>5. Observatii de siguranta</h2>
+    <div class="panel">
+      <ul>
+        <li>Nu manipula sarcini de 230V in timpul programarii.</li>
+        <li>Nu lasa conexiuni improvizate pe alimentarea de putere.</li>
+        <li>Daca apar resetari sau erori seriale, verifica prima data alimentarea si masa comuna.</li>
+        <li>Daca upload-ul esueaza repetat, reduce viteza de upload si reporneste placa cand apare <code>Connecting...</code>.</li>
+      </ul>
+    </div>
+
+    <h2>6. Legaturi utile</h2>
+    <div class="panel">
+      <ul>
+        <li><a href="./index.html">Pagina de prezentare a proiectului</a></li>
+        <li><a href="./instructiuni.html">Pagina completa de instructiuni</a></li>
+        <li><a href="./instructiuni.md">Varianta Markdown a instructiunilor</a></li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

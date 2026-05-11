@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proiect Licenta - Iluminat</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #18202a;
+      --muted: #516173;
+      --border: #d8e0ea;
+      --accent: #1f6feb;
+      --accent-dark: #1554b3;
+      --code-bg: #f0f4f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 36px 20px 48px;
+    }
+
+    h1, h2 {
+      line-height: 1.2;
+      margin-top: 0;
+      color: #0f1720;
+    }
+
+    h2 {
+      margin-top: 28px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    p, li {
+      color: var(--text);
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-top: 0;
+      max-width: 760px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .button-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .button-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .button-secondary {
+      background: #ffffff;
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    .button-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Proiect Licenta - Modul Iluminat</h1>
+    <p class="lead">
+      Pagina de prezentare pentru subsistemul de iluminat bazat pe placa
+      <code>ESP12F_Relay_30A_X8</code>, integrat in reteaua CPU Principal si controlat prin MQTT.
+    </p>
+
+    <div class="panel">
+      <h2>Rolul modulului</h2>
+      <p>
+        Modulul de iluminat controleaza 8 relee si ramane in subreteaua
+        <code>192.168.4.0/24</code> a CPU Principal. El foloseste:
+      </p>
+      <ul>
+        <li>IP fix: <code>192.168.4.2</code></li>
+        <li>gateway: <code>192.168.4.1</code></li>
+        <li>DNS: <code>192.168.4.1</code></li>
+        <li>broker MQTT: <code>192.168.4.1:1883</code></li>
+      </ul>
+      <p>
+        Topicurile folosite raman:
+      </p>
+      <ul>
+        <li><code>LICENTA/ILUMINAT/COMANDA</code></li>
+        <li><code>LICENTA/ILUMINAT/STATUS</code></li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>Ce gasesti in documentatie</h2>
+      <ul>
+        <li>pasii de conectare <code>PC -> Arduino UNO -> ESP12F_Relay_30A_X8</code></li>
+        <li>setarile necesare in Arduino IDE</li>
+        <li>configurarea firmware-ului pentru WiFi, IP static si MQTT</li>
+        <li>formatul mesajelor MQTT si pasii de upload</li>
+      </ul>
+
+      <div class="cta-row">
+        <a class="button button-primary" href="./instructiuni.html">Deschide instructiunile HTML</a>
+        <a class="button button-secondary" href="./schema-hardware.html">Vezi schema hardware</a>
+        <a class="button button-secondary" href="./instructiuni.md">Vezi instructiunile Markdown</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Fisiere relevante</h2>
+      <ul>
+        <li><code>Proiect_Licenta_Iluminat/Proiect_Licenta_Iluminat.ino</code></li>
+        <li><code>Proiect_Licenta_Iluminat/config.h</code></li>
+        <li><code>docs/schema-hardware.html</code></li>
+        <li><code>docs/instructiuni.html</code></li>
+        <li><code>docs/instructiuni.md</code></li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

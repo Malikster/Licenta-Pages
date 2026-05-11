@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schema Vizuala - Instalatia Sanitara</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5a6478;
+      --accent: #1367d6;
+      --border: #d8e0eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 860px;
+    }
+
+    .panel {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Schema Vizuala - Instalatia Sanitara</h1>
+      <p class="lead">
+        Diagrama prezinta cele doua rezervoare, linia cu debitmetru si valva, linia cu pompa bidirectionala,
+        senzorii de nivel, semnalele ESP32, MQTT si alimentarea comuna.
+      </p>
+      <p>
+        Resurse asociate:
+        <a href="../index.html">prezentare proiect</a> |
+        <a href="hardware.html">schema hardware</a> |
+        <a href="mqtt.html">schema MQTT</a> |
+        <a href="instructiuni.html">instructiuni complete</a>
+      </p>
+    </header>
+
+    <div class="panel">
+      <img src="schema-instalatie.svg" alt="Schema vizuala clara a instalatiei sanitare">
+    </div>
+  </div>
+</body>
+</html>
