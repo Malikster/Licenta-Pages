@@ -41,10 +41,57 @@ body {
   text-decoration: none;
 }
 
+.site-top-bar {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background: var(--site-accent);
+}
+
+.site-top-bar .site-home-link {
+  flex: 1 1 auto;
+  background: transparent;
+}
+
 .site-home-link:hover,
 .site-home-link:focus {
   background: var(--site-accent-dark);
   color: #ffffff !important;
+}
+
+.site-doorbell-button {
+  flex: 0 0 auto;
+  width: 48px;
+  min-height: 44px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 0 !important;
+  background: var(--site-accent) !important;
+  color: #ffffff !important;
+}
+
+.site-doorbell-button:hover,
+.site-doorbell-button:focus {
+  background: var(--site-accent-dark) !important;
+}
+
+.site-doorbell-button.is-sending {
+  background: var(--site-amber) !important;
+}
+
+.site-doorbell-button.is-ok {
+  background: var(--site-green) !important;
+}
+
+.site-doorbell-button.is-error {
+  background: var(--site-red) !important;
+}
+
+.site-doorbell-button svg {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 header,
