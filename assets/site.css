@@ -437,15 +437,15 @@ hr {
   }
 
   .execution-list td:nth-child(2)::before {
-    content: "Cod finalizat";
+    content: "Cod finalizat (40%)";
   }
 
   .execution-list td:nth-child(3)::before {
-    content: "Hardware testat";
+    content: "Hardware testat (40%)";
   }
 
   .execution-list td:nth-child(4)::before {
-    content: "Adaugare la macheta";
+    content: "Adaugare la macheta (20%)";
   }
 
   .execution-list td:not(:first-child)::before {

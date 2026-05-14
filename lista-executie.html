@@ -268,9 +268,9 @@
         <thead>
           <tr>
             <th>Proiect</th>
-            <th>Cod finalizat</th>
-            <th>Hardware testat</th>
-            <th>Adaugare la macheta</th>
+            <th>Cod finalizat (40%)</th>
+            <th>Hardware testat (40%)</th>
+            <th>Adaugare la macheta (20%)</th>
           </tr>
         </thead>
         <tbody>
@@ -330,6 +330,8 @@
       </div>
       <div class="bar"><span id="progress-bar"></span></div>
       <p class="note">
+        Procentul executat este calculat ponderat pentru fiecare proiect: cod 40%, hardware 40%, macheta 20%.
+        <br>
         Lista se incarca din <code>data/lista-executie.json</code> pe orice dispozitiv. Doar browserul in care este salvat tokenul GitHub poate scrie modificarile in JSON.
       </p>
     </section>
@@ -352,6 +354,11 @@
     const saveButton = document.getElementById("save-site");
     const tokenButton = document.getElementById("token");
     const syncStatus = document.getElementById("sync-status");
+    const progressWeights = {
+      cod: 40,
+      hardware: 40,
+      macheta: 20,
+    };
     let sharedSha = null;
     let dirty = false;
     let saving = false;
@@ -435,10 +442,17 @@
 
     function updateProgress() {
       const checked = boxes.filter((box) => box.checked).length;
-      const total = boxes.length;
-      const percent = Math.round((checked / total) * 100);
-      progressText.textContent = `${checked} / ${total} (${percent}%)`;
+      const totalChecks = boxes.length;
+      const earnedWeight = boxes.reduce((sum, box) => sum + (box.checked ? weightForBox(box) : 0), 0);
+      const totalWeight = boxes.reduce((sum, box) => sum + weightForBox(box), 0);
+      const percent = totalWeight > 0 ? Math.round((earnedWeight / totalWeight) * 100) : 0;
+      progressText.textContent = `${checked} / ${totalChecks} (${percent}%)`;
       progressBar.style.width = `${percent}%`;
+    }
+
+    function weightForBox(box) {
+      const category = box.dataset.key.split("-").pop();
+      return progressWeights[category] || 0;
     }
 
     function updateButtons() {
