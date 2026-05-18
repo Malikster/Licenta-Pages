@@ -565,8 +565,9 @@ hr {
   }
 
   .site-home-link {
-    font-size: 0.92rem;
-    line-height: 1.35;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    padding-right: 56px;
     overflow-wrap: anywhere;
   }
 
@@ -575,8 +576,48 @@ hr {
   .shell,
   .container,
   .wrap,
-  .content {
-    width: min(100% - 24px, 1120px);
+  .content,
+  .page {
+    width: min(100% - 24px, 1120px) !important;
+    max-width: calc(100% - 24px) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  header,
+  .hero,
+  .page-header {
+    padding: 18px 14px !important;
+  }
+
+  h1 {
+    font-size: clamp(1.7rem, 8vw, 2.15rem) !important;
+    line-height: 1.14 !important;
+    overflow-wrap: anywhere;
+  }
+
+  h2 {
+    font-size: 1.35rem !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere;
+  }
+
+  h3 {
+    font-size: 1.08rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere;
+  }
+
+  p,
+  li,
+  td,
+  th,
+  .lead,
+  .lede,
+  .subtitle,
+  .desc {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .card,
@@ -586,10 +627,122 @@ hr {
     padding: 14px;
   }
 
+  .grid,
+  .cards,
+  .modules,
+  .kpis,
+  .features,
+  .topics,
+  .stack,
+  .grid.cols-2,
+  .grid.cols-3,
+  .cols-2,
+  .cols-3 {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  nav,
+  .nav,
+  .actions,
+  .hero-actions,
+  .links,
+  .top-actions,
+  .button-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+
+  nav a,
+  .nav a,
+  a.button,
+  .button,
+  .button-link,
+  button,
+  input[type="button"],
+  input[type="submit"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    padding: 9px 10px !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
   table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  table thead {
+    display: none !important;
+  }
+
+  table tbody,
+  table tr,
+  table th,
+  table td {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+  }
+
+  table tbody {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  table tr {
+    border: 1px solid var(--site-line) !important;
+    border-radius: 8px !important;
+    background: var(--site-panel) !important;
+    overflow: hidden;
+  }
+
+  table th,
+  table td {
+    padding: 10px 12px !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--site-line) !important;
+  }
+
+  table th {
+    background: var(--site-panel-alt) !important;
+    color: var(--site-text) !important;
+  }
+
+  table td:last-child,
+  table th:last-child {
+    border-bottom: 0 !important;
+  }
+
+  pre {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word;
+  }
+
+  code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word;
+  }
+
+  img,
+  svg {
+    max-width: 100% !important;
+    height: auto !important;
   }
 
   .execution-list.panel {
@@ -643,14 +796,13 @@ hr {
   }
 
   .execution-list td:not(:first-child) {
-    display: flex;
+    display: grid !important;
+    grid-template-columns: 24px minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
-    position: relative;
     min-height: 46px;
     margin-top: 8px;
-    padding: 8px 10px 8px 44px;
+    padding: 8px 10px !important;
     border: 1px solid var(--site-line);
     border-radius: 8px;
     background: var(--site-soft);
@@ -669,18 +821,19 @@ hr {
   }
 
   .execution-list td:not(:first-child)::before {
+    grid-column: 2;
+    grid-row: 1;
     color: var(--site-text);
     font-weight: 700;
   }
 
   .execution-list label.check {
     display: inline-flex !important;
-    flex: 0 0 24px;
+    grid-column: 1;
+    grid-row: 1;
     justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
+    position: static;
+    transform: none;
     width: 24px;
     min-height: 32px;
     margin-left: 0;
