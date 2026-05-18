@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructiuni ESP32-S3-N16R8 ESP-CAM</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f6;
+      --panel: #ffffff;
+      --ink: #162126;
+      --muted: #5d6b75;
+      --line: #d8e0dd;
+      --accent: #245f99;
+      --accent-2: #177a54;
+      --warn: #b43b3b;
+      --code: #eef3f6;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.58; }
+    main { width: min(1120px, 100%); margin: 0 auto; padding: 24px 18px 56px; display: grid; gap: 18px; }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { font-size: clamp(1.7rem, 3vw, 2.5rem); }
+    h2 { font-size: 1.25rem; margin-bottom: 10px; }
+    h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 22px; }
+    code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: 0.95em; }
+    pre { margin: 12px 0; padding: 14px; background: var(--code); border: 1px solid var(--line); border-radius: 8px; overflow: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f3; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 650; }
+    .button.secondary { background: var(--accent-2); }
+    .note, .ok, .warn { padding: 10px 12px; border-left: 4px solid var(--accent); background: #f3f8fd; }
+    .ok { border-left-color: var(--accent-2); background: #eff9f4; }
+    .warn { border-left-color: var(--warn); background: #fdf3f3; }
+    @media (max-width: 860px) {
+      main { padding: 14px 10px 40px; }
+      .grid { grid-template-columns: 1fr; }
+      .button { width: 100%; }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="site-home-link" href="../index.html">Sistem automatizare instalatii electrice tip Smart-House folosind Arduino</a>
+
+  <main>
+    <header>
+      <h1>Instructiuni ESP32-S3-N16R8 IoT ESP-CAM Dev Board</h1>
+      <p>Ghid dedicat variantei Arduino pentru placa ESP32-S3-N16R8 ESP-CAM cu camera OV5640, microSD onboard, TMC2209 si micro servo.</p>
+      <div class="actions">
+        <a class="button secondary" href="instructiuni.html">Alege alta placa</a>
+        <a class="button secondary" href="hardware.html">Schema hardware</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Componente folosite</h2>
+      <ul>
+        <li><code>ESP32-S3-N16R8 IoT ESP-CAM Dev Board</code> cu camera <code>OV5640</code></li>
+        <li>driver stepper <code>TMC2209</code></li>
+        <li>motor <code>Bondtech NEMA17 Pancake Stepper 22mm</code></li>
+        <li>micro servo <code>9g</code></li>
+        <li>card <code>microSD</code></li>
+        <li>sursa principala <code>12V</code> si buck <code>9-35V -> 5V 5A</code></li>
+      </ul>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>2. Alimentare</h2>
+        <pre><code>Sursa 12V
+  +--&gt; VMOT TMC2209
+  +--&gt; intrare buck 9-35V -&gt; 5V
+
+Buck 5V
+  +--&gt; 5V ESP32-S3
+  +--&gt; 5V servo
+
+GND comun:
+  sursa 12V
+  buck
+  ESP32-S3
+  TMC2209
+  servo</code></pre>
+        <div class="warn">Nu alimenta stepper-ul din 5V si nu alimenta servo-ul din 3.3V.</div>
+      </div>
+      <div>
+        <h2>3. Wiring ESP32-S3</h2>
+        <table>
+          <thead>
+            <tr><th>Functie</th><th>Pin ESP32-S3</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TMC2209 <code>STEP</code></td><td><code>GPIO1</code></td></tr>
+            <tr><td>TMC2209 <code>DIR</code></td><td><code>GPIO14</code></td></tr>
+            <tr><td>TMC2209 <code>EN/ENN</code></td><td><code>GPIO21</code></td></tr>
+            <tr><td>Servo semnal</td><td><code>GPIO42</code></td></tr>
+            <tr><td>microSD onboard</td><td><code>CLK=39</code>, <code>CMD=38</code>, <code>D0=40</code></td></tr>
+          </tbody>
+        </table>
+        <p>Camera <code>OV5640</code> este definita in sketch si folosita automat pe acest profil.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Pregatirea cardului microSD</h2>
+      <ol>
+        <li>Formateaza cardul in <code>FAT32</code>.</li>
+        <li>Copiaza in radacina cardului fisierele din <code>licenta-acces-supraveghere/sdcard</code>.</li>
+        <li>Redenumeste sau creeaza <code>acces.conf</code> pornind de la <code>acces.conf.example</code>.</li>
+      </ol>
+      <pre><code>WIFI_SSID=Licenta-RPi-AP
+WIFI_PASSWORD=licenta-rpi
+MQTT_HOST=192.168.4.1
+MQTT_PORT=1883
+MQTT_USERNAME=licenta
+MQTT_PASSWORD=licenta
+MQTT_CLIENT_ID=licenta-acces-esp32s3
+STATIC_IP=192.168.4.3
+GARAGE_TRAVEL_STEPS=2400
+GARAGE_STEP_INTERVAL_US=2500
+TMC_ENABLE_AFTER_MOVE=false
+TMC_INVERT_DIRECTION=false
+SERVO_LOCKED_DEG=20
+SERVO_UNLOCKED_DEG=95</code></pre>
+    </section>
+
+    <section>
+      <h2>5. Arduino IDE</h2>
+      <ol>
+        <li>Instaleaza <code>Arduino IDE 2.x</code>.</li>
+        <li>In <code>Boards Manager</code>, instaleaza <code>esp32 by Espressif Systems</code>.</li>
+        <li>In <code>Library Manager</code>, instaleaza <code>PubSubClient</code>.</li>
+        <li>Deschide <code>licenta-acces-supraveghere/licenta-acces-supraveghere.ino</code>.</li>
+      </ol>
+      <h3>Setari recomandate</h3>
+      <ul>
+        <li><code>Board -> ESP32S3 Dev Module</code></li>
+        <li><code>USB CDC On Boot -> Enabled</code></li>
+        <li><code>Flash Size -> 16MB</code></li>
+        <li><code>PSRAM -> OPI PSRAM</code> sau <code>Enabled</code></li>
+        <li><code>Upload Speed -> 460800</code> sau <code>921600</code></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Upload si pornire</h2>
+      <ol>
+        <li>Apasa <code>Verify</code> in Arduino IDE.</li>
+        <li>Daca build-ul trece, apasa <code>Upload</code>.</li>
+        <li>Daca upload-ul nu porneste, tine apasat <code>BOOT</code>, apasa scurt <code>RST/EN</code>, apoi elibereaza <code>BOOT</code>.</li>
+        <li>Deschide <code>Serial Monitor</code> la <code>115200 baud</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>7. Testare web</h2>
+      <ul>
+        <li><code>http://IP_PLACA/</code> pentru pagina de control</li>
+        <li><code>http://IP_PLACA/status</code> pentru status JSON</li>
+        <li><code>http://IP_PLACA/camera.jpg</code> pentru captura camera</li>
+        <li><code>http://IP_PLACA/upload.html</code> pentru administrare SD</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8. Test MQTT</h2>
+      <pre><code>mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m deschide
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m stop
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m inchide
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m deblocheaza
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m blocheaza
+mosquitto_sub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/STATUS -v</code></pre>
+      <p><code>LICENTA/ACCES/STATUS</code> este publicat retained la conectare, dupa comenzi si la finalul miscarii garajului.</p>
+    </section>
+
+    <section>
+      <h2>9. Troubleshooting</h2>
+      <ul>
+        <li>Daca stepper-ul vibreaza, verifica bobinele <code>A1/A2</code> si <code>B1/B2</code>.</li>
+        <li>Daca motorul merge invers, seteaza <code>TMC_INVERT_DIRECTION=true</code>.</li>
+        <li>Daca servo-ul reseteaza placa, imbunatateste alimentarea de 5V.</li>
+        <li>Daca pagina web lipseste, verifica fisierele de pe microSD.</li>
+      </ul>
+    </section>
+  </main>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

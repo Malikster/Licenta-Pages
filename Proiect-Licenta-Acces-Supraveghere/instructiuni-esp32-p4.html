@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructiuni FireBeetle 2 ESP32-P4</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f6;
+      --panel: #ffffff;
+      --ink: #162126;
+      --muted: #5d6b75;
+      --line: #d8e0dd;
+      --accent: #245f99;
+      --accent-2: #177a54;
+      --warn: #b43b3b;
+      --code: #eef3f6;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.58; }
+    main { width: min(1120px, 100%); margin: 0 auto; padding: 24px 18px 56px; display: grid; gap: 18px; }
+    header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { font-size: clamp(1.7rem, 3vw, 2.5rem); }
+    h2 { font-size: 1.25rem; margin-bottom: 10px; }
+    h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0 8px 22px; }
+    code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: 0.95em; }
+    pre { margin: 12px 0; padding: 14px; background: var(--code); border: 1px solid var(--line); border-radius: 8px; overflow: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f3; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 650; }
+    .button.secondary { background: var(--accent-2); }
+    .note, .ok, .warn { padding: 10px 12px; border-left: 4px solid var(--accent); background: #f3f8fd; }
+    .ok { border-left-color: var(--accent-2); background: #eff9f4; }
+    .warn { border-left-color: var(--warn); background: #fdf3f3; }
+    @media (max-width: 860px) {
+      main { padding: 14px 10px 40px; }
+      .grid { grid-template-columns: 1fr; }
+      .button { width: 100%; }
+    }
+  </style>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="site-home-link" href="../index.html">Sistem automatizare instalatii electrice tip Smart-House folosind Arduino</a>
+
+  <main>
+    <header>
+      <h1>Instructiuni FireBeetle 2 ESP32-P4 + IO Expansion Board</h1>
+      <p>Ghid dedicat variantei ESP-IDF pentru kitul FireBeetle 2 ESP32-P4, camera OV5640 pe MIPI-CSI, TF card, TMC2209 si micro servo.</p>
+      <div class="actions">
+        <a class="button secondary" href="instructiuni.html">Alege alta placa</a>
+        <a class="button secondary" href="hardware.html">Schema hardware</a>
+        <a class="button secondary" href="arhitectura-firebeetle-p4.md">Arhitectura P4</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>1. Firmware recomandat</h2>
+      <p>Pentru P4 foloseste subproiectul <code>esp32-p4-ov5640-video-server</code>, bazat pe ESP-IDF. Sketch-ul Arduino principal ramane doar pentru test rapid de actuatori pe P4, fara streaming camera MIPI.</p>
+      <ul>
+        <li>stream <code>OV5640</code> pe <code>http://IP:81/stream</code></li>
+        <li>pagina de control acces pe <code>http://IP/acces</code></li>
+        <li>status JSON pe <code>http://IP/api/access_status</code></li>
+        <li>MQTT retained pe <code>LICENTA/ACCES/STATUS</code></li>
+      </ul>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>2. Alimentare</h2>
+        <pre><code>Sursa 12V
+  +--&gt; VMOT TMC2209
+  +--&gt; intrare buck 9-35V -&gt; 5V
+
+Buck 5V
+  +--&gt; 5V FireBeetle 2 ESP32-P4
+  +--&gt; 5V servo
+
+GND comun:
+  sursa 12V
+  buck
+  ESP32-P4
+  TMC2209
+  servo</code></pre>
+        <div class="warn">Nu alimenta stepper-ul din 5V si nu alimenta servo-ul din 3.3V.</div>
+      </div>
+      <div>
+        <h2>3. Wiring P4</h2>
+        <table>
+          <thead>
+            <tr><th>Functie</th><th>Pin ESP32-P4</th><th>Expansion</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TMC2209 <code>STEP</code></td><td><code>GPIO20</code></td><td><code>A0</code></td></tr>
+            <tr><td>TMC2209 <code>DIR</code></td><td><code>GPIO21</code></td><td><code>A1</code></td></tr>
+            <tr><td>TMC2209 <code>EN/ENN</code></td><td><code>GPIO22</code></td><td><code>A2</code></td></tr>
+            <tr><td>Servo semnal</td><td><code>GPIO23</code></td><td><code>A3</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Pini rezervati pe P4</h2>
+      <ul>
+        <li><code>GPIO7/GPIO8</code>: <code>SDA/SCL</code>, folositi si pentru camera/SCCB</li>
+        <li><code>GPIO39-45</code>: TF card onboard</li>
+        <li><code>GPIO14-19</code>, <code>GPIO54</code>, <code>GPIO6</code>: conexiunea interna cu modulul Wi-Fi/Bluetooth ESP32-C6</li>
+        <li><code>GPIO35</code>: <code>BOOT</code></li>
+      </ul>
+      <table>
+        <thead>
+          <tr><th>TF card</th><th>Pin ESP32-P4</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>D0</code></td><td><code>GPIO39</code></td></tr>
+          <tr><td><code>D1</code></td><td><code>GPIO40</code></td></tr>
+          <tr><td><code>D2</code></td><td><code>GPIO41</code></td></tr>
+          <tr><td><code>D3</code></td><td><code>GPIO42</code></td></tr>
+          <tr><td><code>CLK</code></td><td><code>GPIO43</code></td></tr>
+          <tr><td><code>CMD</code></td><td><code>GPIO44</code></td></tr>
+          <tr><td><code>EN</code></td><td><code>GPIO45</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Pregatirea TF card</h2>
+      <ol>
+        <li>Formateaza cardul in <code>FAT32</code>.</li>
+        <li>Copiaza optional <code>esp32-p4-ov5640-video-server/sdcard/acces-p4.html</code> in radacina cardului.</li>
+        <li>Aplicatia monteaza cardul la <code>/sdcard</code>.</li>
+      </ol>
+      <p>Daca fisierul <code>/sdcard/acces-p4.html</code> exista, pagina <code>/acces</code> il serveste pe acesta. Daca lipseste, firmware-ul foloseste pagina inclusa in binar.</p>
+    </section>
+
+    <section>
+      <h2>6. ESP-IDF</h2>
+      <p>In mediul local folosit in acest proiect, ESP-IDF este disponibil prin profilul Espressif instalat.</p>
+      <pre><code>cd esp32-p4-ov5640-video-server
+idf.py set-target esp32p4
+idf.py menuconfig
+idf.py build
+idf.py -p PORT flash monitor</code></pre>
+      <h3>Setari implicite importante</h3>
+      <pre><code>Wi-Fi SSID=Licenta-RPi-AP
+Wi-Fi Password=licenta-rpi
+MQTT Host=192.168.4.1
+MQTT Port=1883
+MQTT Username=licenta
+MQTT Password=licenta
+MQTT Client ID=licenta-acces-esp32p4
+Garage Travel Steps=2400
+Garage Step Interval Us=2500
+Servo Locked Deg=20
+Servo Unlocked Deg=95</code></pre>
+    </section>
+
+    <section>
+      <h2>7. Endpoint-uri locale</h2>
+      <ul>
+        <li><code>http://IP/</code> pentru interfata video Espressif</li>
+        <li><code>http://IP/acces</code> pentru pagina de control acces</li>
+        <li><code>http://IP:81/stream</code> pentru stream MJPEG</li>
+        <li><code>http://IP/api/access_status</code> pentru status JSON</li>
+        <li><code>http://IP/api/garage/open</code>, <code>/stop</code>, <code>/close</code></li>
+        <li><code>http://IP/api/gate/lock</code>, <code>/unlock</code></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8. Test MQTT</h2>
+      <pre><code>mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m deschide
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m stop
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m inchide
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m deblocheaza
+mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m blocheaza
+mosquitto_sub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/STATUS -v</code></pre>
+      <p><code>LICENTA/ACCES/STATUS</code> este publicat retained la conectare, dupa comenzi si la finalul miscarii garajului.</p>
+    </section>
+
+    <section>
+      <h2>9. Troubleshooting</h2>
+      <ul>
+        <li>Daca stream-ul nu porneste, verifica flexul camerei OV5640 si configuratia MIPI-CSI.</li>
+        <li>Daca Wi-Fi/MQTT nu pornesc, verifica firmware-ul modulului intern ESP32-C6 si reteaua Raspberry Pi.</li>
+        <li>Daca stepper-ul vibreaza, verifica bobinele si curentul TMC2209.</li>
+        <li>Daca motorul merge invers, activeaza inversarea directiei din menuconfig.</li>
+        <li>Daca servo-ul reseteaza placa, imbunatateste alimentarea de 5V.</li>
+      </ul>
+    </section>
+  </main>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

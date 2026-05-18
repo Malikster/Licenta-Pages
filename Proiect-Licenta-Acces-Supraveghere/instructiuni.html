@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Instructiuni Proiect Licenta Acces Supraveghere</title>
+  <title>Alege instructiunile pentru placa</title>
   <style>
     :root {
       color-scheme: light;
@@ -22,23 +22,35 @@
     main { width: min(1120px, 100%); margin: 0 auto; padding: 24px 18px 56px; display: grid; gap: 18px; }
     header, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
     h1, h2, h3 { margin-top: 0; }
-    h1 { font-size: clamp(1.7rem, 3vw, 2.5rem); }
+    h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 10px; }
     h2 { font-size: 1.25rem; margin-bottom: 10px; }
     h3 { font-size: 1.05rem; margin-bottom: 8px; }
     p { margin: 8px 0; }
-    ul, ol { margin: 8px 0 8px 22px; }
+    ul { margin: 8px 0 8px 22px; }
     code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-family: Consolas, "Courier New", monospace; font-size: 0.95em; }
-    pre { margin: 12px 0; padding: 14px; background: var(--code); border: 1px solid var(--line); border-radius: 8px; overflow: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
-    th { background: #f1f5f3; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .note, .ok, .warn { padding: 10px 12px; border-left: 4px solid var(--accent); background: #f3f8fd; }
-    .ok { border-left-color: var(--accent-2); background: #eff9f4; }
-    .warn { border-left-color: var(--warn); background: #fdf3f3; }
+    .lead { color: var(--muted); font-size: 1.05rem; max-width: 860px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: #fbfcfb; display: grid; gap: 10px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 650;
+    }
+    .button.secondary { background: var(--accent-2); }
+    .button.warn { background: var(--warn); }
+    .note { padding: 10px 12px; border-left: 4px solid var(--accent); background: #f3f8fd; }
     @media (max-width: 860px) {
       main { padding: 14px 10px 40px; }
       .grid { grid-template-columns: 1fr; }
+      .button { width: 100%; }
     }
   </style>
   <link rel="stylesheet" href="../assets/site.css">
@@ -48,390 +60,50 @@
 
   <main>
     <header>
-      <h1>Instructiuni de instalare si configurare</h1>
-      <p>Ghid pentru proiectul <strong>Proiect Licenta Acces Supraveghere</strong>, cu selectie intre <strong>ESP32-S3-N16R8 IoT ESP-CAM Dev Board</strong> si <strong>FireBeetle 2 ESP32-P4 Development Board + IO Expansion Board</strong>.</p>
-      <p>Pentru schema hardware detaliata si alimentari, vezi <a href="hardware.html">docs/hardware.html</a>.</p>
+      <h1>Alege instructiunile pentru placa</h1>
+      <p class="lead">Proiectul are doua variante hardware. Alege pagina care corespunde placii folosite ca sa vezi doar pasii relevanti pentru firmware, configurare, upload si testare.</p>
+      <div class="actions">
+        <a class="button secondary" href="index.html">Prezentare proiect</a>
+        <a class="button secondary" href="hardware.html">Schema hardware si alimentari</a>
+      </div>
     </header>
 
-    <section>
-      <h2>1. Ce se pastreaza identic pe ambele variante</h2>
-      <ul>
-        <li>Raspberry Pi este host pentru Wi-Fi.</li>
-        <li>Raspberry Pi este brokerul MQTT.</li>
-        <li><code>TMC2209</code> controleaza usa garajului.</li>
-        <li>Micro servo <code>9g</code> controleaza blocarea portii.</li>
-        <li>Cardul <code>microSD</code> / <code>TF</code> pastreaza fisierele web si <code>acces.conf</code>.</li>
-        <li>Topicurile MQTT raman:
-          <ul>
-            <li><code>LICENTA/ACCES/GARAJ</code> cu <code>deschide</code>, <code>stop</code>, <code>inchide</code></li>
-            <li><code>LICENTA/ACCES/POARTA</code> cu <code>blocheaza</code>, <code>deblocheaza</code></li>
-            <li><code>LICENTA/ACCES/STATUS</code> pentru status JSON retained</li>
-          </ul>
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>2. Ce difera intre placi</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Aspect</th>
-            <th>ESP32-S3-N16R8 ESP-CAM</th>
-            <th>FireBeetle 2 ESP32-P4 + IO Expansion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Board in Arduino IDE</td>
-            <td><code>ESP32S3 Dev Module</code></td>
-            <td><code>ESP32P4 Dev Module</code></td>
-          </tr>
-          <tr>
-            <td>Camera in acest proiect</td>
-            <td>da, <code>OV5640</code></td>
-            <td>da, in aplicatia <code>esp32-p4-ov5640-video-server</code> bazata pe ESP-IDF</td>
-          </tr>
-          <tr>
-            <td>microSD / TF</td>
-            <td>onboard</td>
-            <td>onboard</td>
-          </tr>
-          <tr>
-            <td>Stepper / Servo / MQTT / Web</td>
-            <td>da</td>
-            <td>da</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="warn">
-        Pe <code>ESP32-P4</code>, daca vrei camera <code>OV5640</code>, MQTT, garaj si poarta in acelasi firmware, foloseste <code>esp32-p4-ov5640-video-server</code>. Sketch-ul Arduino principal pentru <code>ESP32-P4</code> ramane doar o varianta de test pentru actuatori.
-      </div>
-    </section>
-
-    <section>
-      <h2>3. Componente necesare</h2>
-      <ul>
-        <li>placa aleasa: <code>ESP32-S3</code> sau <code>ESP32-P4</code></li>
-        <li>driver stepper <code>TMC2209</code></li>
-        <li>motor <code>Bondtech NEMA17 Pancake Stepper 22mm</code></li>
-        <li>micro servo <code>9g</code></li>
-        <li>card <code>microSD</code></li>
-        <li>cablu <code>USB-C</code></li>
-        <li>sursa principala <code>12V</code></li>
-        <li>modul coborator <code>9-35V -&gt; 5V 5A</code></li>
-      </ul>
-      <p>Pentru varianta <code>ESP32-S3</code>, se foloseste si camera <code>OV5640</code> montata pe placa.</p>
-    </section>
-
     <section class="grid">
-      <div>
-        <h2>4. Alimentare</h2>
-        <p>Pentru tabelele complete de conexiuni si checklist-ul electric, foloseste pagina <a href="hardware.html">Schema hardware si alimentari</a>.</p>
-        <pre><code>Sursa 12V
-  +--&gt; VMOT TMC2209
-  +--&gt; intrare buck 9-35V -&gt; 5V
-
-Buck 5V
-  +--&gt; 5V ESP32
-  +--&gt; 5V servo
-
-Toate GND-urile:
-  sursa 12V
-  buck
-  ESP32
-  TMC2209
-  servo</code></pre>
-        <div class="warn">
-          Nu alimenta stepper-ul din <code>5V</code> si nu alimenta servo-ul din <code>3.3V</code>.
-        </div>
+      <div class="card">
+        <h2>ESP32-S3-N16R8 IoT ESP-CAM Dev Board</h2>
+        <p>Foloseste sketch-ul Arduino principal si camera <code>OV5640</code> din profilul ESP32-S3.</p>
+        <ul>
+          <li>Arduino IDE / Arduino CLI</li>
+          <li>camera JPEG prin <code>/camera.jpg</code></li>
+          <li>interfata web de pe microSD</li>
+          <li>MQTT pentru garaj, poarta si status</li>
+        </ul>
+        <a class="button" href="instructiuni-esp32-s3.html">Instructiuni ESP32-S3</a>
       </div>
-      <div>
-        <h2>5. Recomandari electrice</h2>
-        <ul>
-          <li>radiator pentru <code>TMC2209</code></li>
-          <li>condensator <code>100uF - 470uF</code> intre <code>VMOT</code> si <code>GND</code></li>
-          <li>condensator <code>470uF - 1000uF</code> pe linia de <code>5V</code> pentru servo, daca apar caderi de tensiune</li>
-          <li>doua limit switch-uri pentru capetele de cursa ale garajului</li>
-        </ul>
-      </div>
-    </section>
 
-    <section class="grid">
-      <div>
-        <h2>6. Wiring pentru ESP32-S3</h2>
+      <div class="card">
+        <h2>FireBeetle 2 ESP32-P4 + IO Expansion Board</h2>
+        <p>Foloseste subproiectul ESP-IDF pentru camera <code>OV5640</code> pe MIPI-CSI si control acces in acelasi firmware.</p>
         <ul>
-          <li><code>GPIO1</code> - <code>STEP</code></li>
-          <li><code>GPIO14</code> - <code>DIR</code></li>
-          <li><code>GPIO21</code> - <code>EN / ENN</code></li>
-          <li><code>GPIO42</code> - semnal servo</li>
+          <li>ESP-IDF</li>
+          <li>stream MJPEG pe <code>http://IP:81/stream</code></li>
+          <li>pagina de control la <code>/acces</code></li>
+          <li>MQTT pentru garaj, poarta si status</li>
         </ul>
-        <p>microSD onboard:</p>
-        <ul>
-          <li><code>CLK=39</code></li>
-          <li><code>CMD=38</code></li>
-          <li><code>D0=40</code></li>
-        </ul>
-        <p>Camera <code>OV5640</code> este deja definita in sketch si folosita automat pe acest profil.</p>
-      </div>
-      <div>
-        <h2>7. Wiring pentru FireBeetle 2 ESP32-P4</h2>
-        <ul>
-          <li><code>GPIO20 / A0</code> - <code>STEP</code></li>
-          <li><code>GPIO21 / A1</code> - <code>DIR</code></li>
-          <li><code>GPIO22 / A2</code> - <code>EN / ENN</code></li>
-          <li><code>GPIO23 / A3</code> - semnal servo</li>
-        </ul>
-        <p>TF card onboard:</p>
-        <ul>
-          <li><code>D0=39</code></li>
-          <li><code>D1=40</code></li>
-          <li><code>D2=41</code></li>
-          <li><code>D3=42</code></li>
-          <li><code>CLK=43</code></li>
-          <li><code>CMD=44</code></li>
-          <li><code>TF enable=45</code></li>
-        </ul>
-        <p>Aplicatia recomandata pentru <code>ESP32-P4</code> este <code>esp32-p4-ov5640-video-server</code>, care foloseste camera MIPI <code>OV5640</code> si include si controlul pentru garaj si poarta.</p>
-        <p>Pini lasati liberi pe <code>ESP32-P4</code>: <code>GPIO7/GPIO8</code> pentru <code>SDA/SCL</code> si camera/SCCB, <code>GPIO39-45</code> pentru TF card, <code>GPIO14-19</code>, <code>GPIO54</code> si <code>GPIO6</code> pentru modulul Wi-Fi/Bluetooth <code>ESP32-C6</code>, plus <code>GPIO35</code> pentru <code>BOOT</code>.</p>
+        <a class="button warn" href="instructiuni-esp32-p4.html">Instructiuni ESP32-P4</a>
       </div>
     </section>
 
     <section>
-      <h2>8. Motorul stepper si TMC2209</h2>
-      <p>Motorul folosit este <code>Bondtech NEMA17 Pancake Stepper 22mm</code>.</p>
-      <p>Setari recomandate pentru primele teste:</p>
+      <h2>Topicuri comune MQTT</h2>
       <ul>
-        <li>curent TMC2209: aproximativ <code>0.6A - 0.8A RMS</code></li>
-        <li><code>GARAGE_STEP_INTERVAL_US=2500</code></li>
-        <li>calibrare mecanica pentru <code>GARAGE_TRAVEL_STEPS</code></li>
-      </ul>
-      <p>Legare motor:</p>
-      <ul>
-        <li><code>A1/A2</code> = bobina A</li>
-        <li><code>B1/B2</code> = bobina B</li>
+        <li><code>LICENTA/ACCES/GARAJ</code>: <code>deschide</code>, <code>stop</code>, <code>inchide</code></li>
+        <li><code>LICENTA/ACCES/POARTA</code>: <code>blocheaza</code>, <code>deblocheaza</code></li>
+        <li><code>LICENTA/ACCES/STATUS</code>: status JSON retained</li>
       </ul>
       <div class="note">
-        Daca sensul de rotatie este invers, foloseste <code>TMC_INVERT_DIRECTION=true</code> in <code>acces.conf</code>.
+        Raspberry Pi ramane host pentru Wi-Fi si broker MQTT in ambele variante.
       </div>
-    </section>
-
-    <section>
-      <h2>9. Raspberry Pi: Wi-Fi si MQTT</h2>
-      <pre><code>WIFI_SSID=Licenta-RPi-AP
-WIFI_PASSWORD=licenta-rpi
-MQTT_HOST=192.168.4.1
-MQTT_PORT=1883
-MQTT_USERNAME=licenta
-MQTT_PASSWORD=licenta</code></pre>
-      <p>Exemplu de IP folosit pentru placa:</p>
-      <pre><code>STATIC_IP=192.168.4.3</code></pre>
-    </section>
-
-    <section>
-      <h2>10. Pregatirea cardului microSD / TF</h2>
-      <ol>
-        <li>Formateaza cardul in <code>FAT32</code>.</li>
-        <li>Copiaza in radacina cardului:
-          <ul>
-            <li><code>index.html</code></li>
-            <li><code>upload.html</code></li>
-            <li><code>acces.conf</code></li>
-          </ul>
-        </li>
-      </ol>
-      <p>Pentru varianta <code>ESP32-P4</code>, copiaza optional si <code>esp32-p4-ov5640-video-server/sdcard/acces-p4.html</code> in radacina cardului.</p>
-      <p>Aplicatia <code>ESP32-P4</code> monteaza cardul la <code>/sdcard</code>. Endpoint-ul <code>http://IP/acces</code> incarca <code>acces-p4.html</code> de pe card daca fisierul exista, iar daca nu exista foloseste pagina inclusa in firmware.</p>
-      <p>Exemplu de <code>acces.conf</code>:</p>
-      <pre><code>WIFI_SSID=Licenta-RPi-AP
-WIFI_PASSWORD=licenta-rpi
-MQTT_HOST=192.168.4.1
-MQTT_PORT=1883
-MQTT_USERNAME=licenta
-MQTT_PASSWORD=licenta
-MQTT_CLIENT_ID=licenta-acces-placa1
-STATIC_IP=192.168.4.3
-STATIC_GATEWAY=
-STATIC_SUBNET=255.255.255.0
-STATIC_DNS1=192.168.4.1
-STATIC_DNS2=
-GARAGE_TRAVEL_STEPS=2400
-GARAGE_STEP_INTERVAL_US=2500
-TMC_ENABLE_AFTER_MOVE=false
-TMC_INVERT_DIRECTION=false
-SERVO_LOCKED_DEG=20
-SERVO_UNLOCKED_DEG=95</code></pre>
-      <div class="note">
-        <code>MQTT_CLIENT_ID</code> trebuie sa fie unic daca folosesti mai multe placi.
-      </div>
-    </section>
-
-    <section>
-      <h2>11. Instalarea Arduino IDE</h2>
-      <ol>
-        <li>Instaleaza <code>Arduino IDE 2.x</code>.</li>
-        <li>In <code>Boards Manager</code>, instaleaza <code>esp32 by Espressif Systems</code>.</li>
-        <li>In <code>Library Manager</code>, instaleaza <code>PubSubClient</code>.</li>
-      </ol>
-      <div class="ok">
-        Restul bibliotecilor necesare sunt oferite de pachetul <code>esp32</code>.
-      </div>
-    </section>
-
-    <section class="grid">
-      <div>
-        <h2>12. Selectarea placii: ESP32-S3</h2>
-        <p>In <code>Tools</code>, selecteaza:</p>
-        <ul>
-          <li><code>Board -&gt; ESP32S3 Dev Module</code></li>
-          <li><code>USB CDC On Boot -&gt; Enabled</code></li>
-          <li><code>Flash Size -&gt; 16MB</code></li>
-          <li><code>PSRAM -&gt; OPI PSRAM</code> sau <code>Enabled</code></li>
-          <li><code>Upload Speed -&gt; 460800</code> sau <code>921600</code></li>
-          <li><code>Port -&gt; COM-ul placii</code></li>
-        </ul>
-      </div>
-      <div>
-        <h2>13. Selectarea placii: ESP32-P4 in Arduino IDE</h2>
-        <p>In <code>Tools</code>, selecteaza:</p>
-        <ul>
-          <li><code>Board -&gt; ESP32P4 Dev Module</code></li>
-          <li><code>USB CDC On Boot -&gt; Enabled</code></li>
-          <li><code>Partition Scheme -&gt; valoarea implicita a placii</code></li>
-          <li><code>Flash Size -&gt; 16MB</code>, daca optiunea este afisata</li>
-          <li><code>PSRAM -&gt; valoarea implicita a placii</code></li>
-          <li><code>Upload Speed -&gt; 460800</code> sau <code>921600</code></li>
-          <li><code>Port -&gt; COM-ul placii</code></li>
-        </ul>
-      </div>
-    </section>
-
-    <section>
-      <h2>14. Deschiderea proiectului si compilarea</h2>
-      <ol>
-        <li>In Arduino IDE, foloseste <code>File -&gt; Open</code>.</li>
-        <li>Deschide <code>licenta-acces-supraveghere/licenta-acces-supraveghere.ino</code>.</li>
-        <li>Apasa <code>Verify</code>.</li>
-        <li>Daca build-ul trece, apasa <code>Upload</code>.</li>
-      </ol>
-      <p>Sketch-ul detecteaza automat tinta de compilare si activeaza profilul <code>ESP32-S3</code> sau <code>ESP32-P4</code>.</p>
-      <p>Pentru varianta completa <code>ESP32-P4</code>, cu camera si control in acelasi firmware, foloseste subproiectul <code>esp32-p4-ov5640-video-server</code>.</p>
-    </section>
-
-    <section>
-      <h2>15. ESP32-P4 cu ESP-IDF</h2>
-      <p>Pentru <code>FireBeetle 2 ESP32-P4 Development Board + IO Expansion Board</code>, aplicatia recomandata este <code>esp32-p4-ov5640-video-server</code>.</p>
-      <p>Aceasta aplicatie include:</p>
-      <ul>
-        <li>stream <code>OV5640</code> pe <code>http://IP:81/stream</code></li>
-        <li>pagina video Espressif pe <code>http://IP/</code></li>
-        <li>pagina de control acces pe <code>http://IP/acces</code></li>
-        <li>montare TF card la <code>/sdcard</code> si pagina optionala <code>acces-p4.html</code></li>
-        <li>stare JSON pe <code>http://IP/api/access_status</code></li>
-        <li>control HTTP pentru garaj si poarta</li>
-        <li>MQTT pe topicurile <code>LICENTA/ACCES/GARAJ</code>, <code>LICENTA/ACCES/POARTA</code> si status retained pe <code>LICENTA/ACCES/STATUS</code></li>
-      </ul>
-      <p>Din folderul subproiectului ruleaza:</p>
-      <pre><code>cd esp32-p4-ov5640-video-server
-idf.py set-target esp32p4
-idf.py menuconfig
-idf.py build
-idf.py -p PORT flash monitor</code></pre>
-      <div class="note">
-        Valorile implicite sunt deja pregatite pentru Raspberry Pi: <code>Licenta-RPi-AP</code>, <code>licenta-rpi</code>, broker <code>192.168.4.1</code>, user <code>licenta</code>, parola <code>licenta</code>.
-      </div>
-    </section>
-
-    <section>
-      <h2>16. Verificare dupa upload</h2>
-      <p>Deschide <code>Serial Monitor</code> la <code>115200 baud</code>.</p>
-      <p>La pornire vei vedea:</p>
-      <ul>
-        <li>profilul de placa</li>
-        <li>montarea cardului</li>
-        <li>conectarea la Wi-Fi</li>
-        <li>conectarea la MQTT</li>
-        <li>initializarea camerei, doar pe <code>ESP32-S3</code></li>
-      </ul>
-    </section>
-
-    <section class="grid">
-      <div>
-        <h2>17. Daca upload-ul nu porneste pe ESP32-S3</h2>
-        <ol>
-          <li>tine apasat <code>BOOT</code></li>
-          <li>apasa scurt <code>RST</code> sau <code>EN</code></li>
-          <li>elibereaza <code>RST</code></li>
-          <li>dupa 1-2 secunde elibereaza <code>BOOT</code></li>
-          <li>reporneste <code>Upload</code></li>
-        </ol>
-      </div>
-      <div>
-        <h2>18. Daca upload-ul nu porneste pe ESP32-P4</h2>
-        <ol>
-          <li>verifica portul COM</li>
-          <li>deconecteaza si reconecteaza USB-C</li>
-          <li>apasa <code>RST</code></li>
-          <li>reporneste <code>Upload</code></li>
-        </ol>
-      </div>
-    </section>
-
-    <section>
-      <h2>19. Testare</h2>
-      <p>Testeaza in browser:</p>
-      <ul>
-        <li><code>http://IP_PLACA/</code></li>
-        <li><code>http://IP_PLACA/upload.html</code></li>
-        <li><code>http://IP_PLACA/status</code></li>
-      </ul>
-      <p>Pe <code>ESP32-S3</code>, testeaza si:</p>
-      <ul>
-        <li><code>http://IP_PLACA/camera.jpg</code></li>
-      </ul>
-      <p>Pe <code>ESP32-P4</code> cu aplicatia <code>ESP-IDF</code>, testeaza si:</p>
-      <ul>
-        <li><code>http://IP_PLACA/acces</code></li>
-        <li><code>http://IP_PLACA/api/access_status</code></li>
-        <li><code>http://IP_PLACA:81/stream</code></li>
-      </ul>
-      <pre><code>mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m deschide
-mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m stop
-mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/GARAJ -m inchide
-mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m deblocheaza
-mosquitto_pub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/POARTA -m blocheaza
-mosquitto_sub -h 192.168.4.1 -u licenta -P licenta -t LICENTA/ACCES/STATUS -v</code></pre>
-      <p><code>LICENTA/ACCES/STATUS</code> este publicat retained la conectarea MQTT, dupa comenzi pentru garaj/poarta si cand miscarea garajului se termina.</p>
-      <pre><code>{
-  "board": "...",
-  "ip": "192.168.4.3",
-  "mqtt": true,
-  "camera": true,
-  "garageMoving": false,
-  "garagePositionSteps": 0,
-  "garageTargetSteps": 0,
-  "gateLocked": true
-}</code></pre>
-    </section>
-
-    <section>
-      <h2>20. Update firmware de pe card</h2>
-      <ol>
-        <li>Incarca fisierul compilat ca <code>/firmware.bin</code> prin <code>/upload.html</code>.</li>
-        <li>Apasa butonul de restart/update din pagina.</li>
-        <li>La urmatorul boot, placa aplica update-ul si reporneste.</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>21. Troubleshooting</h2>
-      <ul>
-        <li>Daca stepper-ul vibreaza si nu se roteste, verifica bobinele.</li>
-        <li>Daca merge invers, foloseste <code>TMC_INVERT_DIRECTION=true</code>.</li>
-        <li>Daca servo-ul face reset la placa, imbunatateste alimentarea de <code>5V</code>.</li>
-        <li>Daca vrei camera si control in acelasi firmware pe <code>ESP32-P4</code>, foloseste <code>esp32-p4-ov5640-video-server</code>.</li>
-        <li>Daca Wi-Fi sau MQTT nu merg pe FireBeetle 2 ESP32-P4 dintr-un lot vechi, verifica nota DFRobot despre unele placi fabricate la <code>31 octombrie 2025</code>, unde poate fi necesar reflash pentru firmware-ul <code>ESP32-C6</code>.</li>
-      </ul>
     </section>
   </main>
   <script src="../assets/site.js"></script>
